@@ -82,7 +82,8 @@ const ChessBoard: React.FC<ChessBoardProps> = ({ position, lastMove }) => {
                       drop-shadow-sm
                     `}
                     style={{
-                      filter: 'drop-shadow(1px 1px 2px rgba(0,0,0,0.5))'
+                      filter: 'drop-shadow(1px 1px 2px rgba(0,0,0,0.5))',
+                      textShadow: piece === piece.toLowerCase() ? '1px 1px 1px rgba(255,255,255,0.3)' : '1px 1px 1px rgba(0,0,0,0.7)'
                     }}
                   >
                     {getPieceSymbol(piece)}

@@ -2,7 +2,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
-import { Play, Pause, SkipBack, SkipForward, RotateCcw } from "lucide-react";
+import { Play, Pause, SkipBack, SkipForward, RotateCcw, ChevronsLeft, ChevronsRight } from "lucide-react";
 
 interface GameControlsProps {
   onPlay: () => void;
@@ -10,9 +10,12 @@ interface GameControlsProps {
   onNext: () => void;
   onPrevious: () => void;
   onReset: () => void;
+  onGoToStart: () => void;
+  onGoToEnd: () => void;
   isPlaying: boolean;
   canGoNext: boolean;
   canGoPrevious: boolean;
+  canGoToEnd: boolean;
   playbackSpeed: number;
   onSpeedChange: (speed: number) => void;
 }
@@ -23,9 +26,12 @@ const GameControls: React.FC<GameControlsProps> = ({
   onNext,
   onPrevious,
   onReset,
+  onGoToStart,
+  onGoToEnd,
   isPlaying,
   canGoNext,
   canGoPrevious,
+  canGoToEnd,
   playbackSpeed,
   onSpeedChange,
 }) => {
@@ -50,10 +56,21 @@ const GameControls: React.FC<GameControlsProps> = ({
       {/* Botões de controle */}
       <div className="flex justify-center gap-2">
         <Button
+          onClick={onGoToStart}
+          disabled={!canGoPrevious}
+          variant="outline"
+          size="sm"
+          title="Ir para o início"
+        >
+          <ChevronsLeft className="w-4 h-4" />
+        </Button>
+        
+        <Button
           onClick={onPrevious}
           disabled={!canGoPrevious}
           variant="outline"
           size="sm"
+          title="Movimento anterior"
         >
           <SkipBack className="w-4 h-4" />
         </Button>
@@ -62,6 +79,7 @@ const GameControls: React.FC<GameControlsProps> = ({
           onClick={isPlaying ? onPause : onPlay}
           disabled={!canGoNext && !isPlaying}
           size="sm"
+          title={isPlaying ? "Pausar" : "Reproduzir"}
         >
           {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
         </Button>
@@ -71,14 +89,26 @@ const GameControls: React.FC<GameControlsProps> = ({
           disabled={!canGoNext}
           variant="outline"
           size="sm"
+          title="Próximo movimento"
         >
           <SkipForward className="w-4 h-4" />
+        </Button>
+        
+        <Button
+          onClick={onGoToEnd}
+          disabled={!canGoToEnd}
+          variant="outline"
+          size="sm"
+          title="Ir para o final"
+        >
+          <ChevronsRight className="w-4 h-4" />
         </Button>
         
         <Button
           onClick={onReset}
           variant="outline"
           size="sm"
+          title="Reiniciar"
         >
           <RotateCcw className="w-4 h-4" />
         </Button>

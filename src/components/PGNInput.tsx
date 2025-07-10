@@ -7,9 +7,10 @@ interface PGNInputProps {
   onPGNLoad: (pgn: string) => void;
   moves: string[];
   currentMoveIndex: number;
+  onMoveClick: (moveIndex: number) => void;
 }
 
-const PGNInput: React.FC<PGNInputProps> = ({ onPGNLoad, moves, currentMoveIndex }) => {
+const PGNInput: React.FC<PGNInputProps> = ({ onPGNLoad, moves, currentMoveIndex, onMoveClick }) => {
   const [pgnText, setPgnText] = useState("");
 
   const handleLoad = () => {
@@ -57,20 +58,21 @@ const PGNInput: React.FC<PGNInputProps> = ({ onPGNLoad, moves, currentMoveIndex 
           <div className="bg-muted p-3 rounded max-h-40 overflow-y-auto text-sm">
             <div className="flex flex-wrap gap-1">
               {moves.map((move, index) => (
-                <span
+                <button
                   key={index}
+                  onClick={() => onMoveClick(index)}
                   className={`
-                    px-2 py-1 rounded transition-all duration-200
+                    px-2 py-1 rounded transition-all duration-200 cursor-pointer hover:scale-105
                     ${index === currentMoveIndex
-                      ? 'bg-primary text-primary-foreground font-medium'
+                      ? 'bg-primary text-primary-foreground font-medium shadow-sm'
                       : index < currentMoveIndex
-                      ? 'bg-muted-foreground/20 text-muted-foreground'
-                      : 'text-foreground'
+                      ? 'bg-muted-foreground/20 text-muted-foreground hover:bg-muted-foreground/30'
+                      : 'text-foreground hover:bg-accent hover:text-accent-foreground'
                     }
                   `}
                 >
                   {Math.floor(index / 2) + 1}{index % 2 === 0 ? '.' : '...'} {move}
-                </span>
+                </button>
               ))}
             </div>
           </div>
