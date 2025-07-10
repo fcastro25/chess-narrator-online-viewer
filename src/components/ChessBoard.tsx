@@ -60,6 +60,7 @@ const ChessBoard: React.FC<ChessBoardProps> = ({ position, lastMove }) => {
           row.map((piece, colIndex) => {
             const isLight = (rowIndex + colIndex) % 2 === 0;
             const isHighlightedSquare = isHighlighted(rowIndex, colIndex);
+            const isWhitePiece = piece === piece?.toUpperCase();
             
             return (
               <div
@@ -78,12 +79,12 @@ const ChessBoard: React.FC<ChessBoardProps> = ({ position, lastMove }) => {
                   <span 
                     className={`
                       relative z-10 transition-all duration-300 transform
-                      ${piece === piece.toUpperCase() ? 'text-white' : 'text-black'}
+                      ${isWhitePiece ? 'text-white' : 'text-black'}
                       drop-shadow-sm
                     `}
                     style={{
-                      filter: 'drop-shadow(1px 1px 2px rgba(0,0,0,0.5))',
-                      textShadow: piece === piece.toLowerCase() ? '1px 1px 1px rgba(255,255,255,0.3)' : '1px 1px 1px rgba(0,0,0,0.7)'
+                      filter: `drop-shadow(1px 1px 2px ${isWhitePiece ? 'rgba(0,0,0,0.8)' : 'rgba(255,255,255,0.8)'})`,
+                      textShadow: isWhitePiece ? '1px 1px 1px rgba(0,0,0,0.7)' : '1px 1px 1px rgba(255,255,255,0.7)'
                     }}
                   >
                     {getPieceSymbol(piece)}
