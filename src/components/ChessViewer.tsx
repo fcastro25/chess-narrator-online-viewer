@@ -1,10 +1,11 @@
-
 import React, { useState, useEffect, useCallback } from "react";
 import { Chess } from "chess.js";
 import ChessBoard from "./ChessBoard";
 import PGNInput from "./PGNInput";
 import GameControls from "./GameControls";
 import CapturedPieces from "./CapturedPieces";
+import SettingsDrawer from "./SettingsDrawer";
+import MoveAnalysisChart from "./MoveAnalysisChart";
 
 const ChessViewer: React.FC = () => {
   const [chess] = useState(new Chess());
@@ -15,6 +16,8 @@ const ChessViewer: React.FC = () => {
   const [playbackSpeed, setPlaybackSpeed] = useState(1000);
   const [lastMove, setLastMove] = useState<{ from: string; to: string } | null>(null);
   const [capturedPieces, setCapturedPieces] = useState<{ white: string[], black: string[] }>({ white: [], black: [] });
+  const [boardStyle, setBoardStyle] = useState<"classic" | "modern" | "wood">("classic");
+  const [pieceStyle, setPieceStyle] = useState<"classic" | "modern">("classic");
 
   const resetGame = useCallback(() => {
     chess.reset();
@@ -144,11 +147,18 @@ const ChessViewer: React.FC = () => {
   }, [isPlaying, currentMoveIndex, moves.length, nextMove, playbackSpeed]);
 
   return (
-    <div className="min-h-screen bg-background p-4">
-      <div className="max-w-7xl mx-auto">
-        <h1 className="text-3xl font-bold text-center mb-8 text-foreground">
-          Visualizador de Partidas de Xadrez
-        </h1>
+    <div className="min-h-screen bg-background">
+      <div className="max-w-7xl mx-auto p-4">
+        {/* Header with Settings */}
+        <div className="flex justify-between items-center mb-6">
+          <div></div>
+          <SettingsDrawer
+            boardStyle={boardStyle}
+            pieceStyle={pieceStyle}
+            onBoardStyleChange={setBoardStyle}
+            onPieceStyleChange={setPieceStyle}
+          />
+        </div>
         
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* PGN Input */}
@@ -174,6 +184,8 @@ const ChessViewer: React.FC = () => {
                 <ChessBoard
                   position={position}
                   lastMove={lastMove}
+                  boardStyle={boardStyle}
+                  pieceStyle={pieceStyle}
                 />
                 
                 {/* Game Controls */}
@@ -201,6 +213,17 @@ const ChessViewer: React.FC = () => {
                 <CapturedPieces pieces={capturedPieces.white} color="white" />
               </div>
             </div>
+          </div>
+        </div>
+        
+        {/* Move Analysis Chart */}
+        <div className="mt-8">
+          <div className="bg-card p-4 rounded-lg border">
+            <h3 className="text-lg font-medium mb-4">Análise dos Movimentos</h3>
+            <MoveAnalysisChart moves={moves} currentMoveIndex={currentMoveIndex} />
+            <p className="text-xs text-muted-foreground mt-2">
+              * Análise simulada para demonstração. Em uma implementação real, seria integrada com Stockfish ou ChessBase API.
+            </p>
           </div>
         </div>
       </div>
