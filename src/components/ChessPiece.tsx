@@ -4,9 +4,14 @@ import React from "react";
 interface ChessPieceProps {
   piece: string;
   className?: string;
+  pieceStyle?: "classic" | "modern";
 }
 
-const ChessPiece: React.FC<ChessPieceProps> = ({ piece, className = "" }) => {
+const ChessPiece: React.FC<ChessPieceProps> = ({ 
+  piece, 
+  className = "", 
+  pieceStyle = "classic" 
+}) => {
   const getPieceClass = (piece: string): string => {
     const isWhite = piece === piece.toUpperCase();
     const color = isWhite ? 'white' : 'black';
@@ -21,8 +26,17 @@ const ChessPiece: React.FC<ChessPieceProps> = ({ piece, className = "" }) => {
     };
     
     const pieceType = pieceTypes[piece.toLowerCase()];
-    return `piece ${color}-${pieceType}`;
+    
+    // Add piece style to the class name
+    const styleClass = pieceStyle === "modern" ? "modern-piece" : "piece";
+    
+    return `${styleClass} ${color}-${pieceType}`;
   };
+
+  // Don't render anything if piece is null or undefined
+  if (!piece) {
+    return null;
+  }
 
   return (
     <div 

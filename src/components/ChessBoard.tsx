@@ -118,6 +118,7 @@ const ChessBoard: React.FC<ChessBoardProps> = ({
                     {piece && (
                       <ChessPiece
                         piece={piece}
+                        pieceStyle={pieceStyle}
                         className="relative z-10"
                       />
                     )}

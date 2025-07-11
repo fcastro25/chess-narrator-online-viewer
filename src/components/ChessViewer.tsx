@@ -176,7 +176,11 @@ const ChessViewer: React.FC = () => {
             <div className="flex flex-col lg:flex-row items-center justify-center gap-6">
               {/* Captured Black Pieces (left) */}
               <div className="order-2 lg:order-1">
-                <CapturedPieces pieces={capturedPieces.black} color="black" />
+                <CapturedPieces 
+                  pieces={capturedPieces.black} 
+                  color="black" 
+                  pieceStyle={pieceStyle} 
+                />
               </div>
               
               {/* Chess Board */}
@@ -210,7 +214,11 @@ const ChessViewer: React.FC = () => {
               
               {/* Captured White Pieces (right) */}
               <div className="order-3">
-                <CapturedPieces pieces={capturedPieces.white} color="white" />
+                <CapturedPieces 
+                  pieces={capturedPieces.white} 
+                  color="white" 
+                  pieceStyle={pieceStyle} 
+                />
               </div>
             </div>
           </div>

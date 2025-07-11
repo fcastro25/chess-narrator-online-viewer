@@ -1,13 +1,17 @@
-
 import React from "react";
 import ChessPiece from "./ChessPiece";
 
 interface CapturedPiecesProps {
   pieces: string[];
   color: "white" | "black";
+  pieceStyle?: "classic" | "modern";
 }
 
-const CapturedPieces: React.FC<CapturedPiecesProps> = ({ pieces, color }) => {
+const CapturedPieces: React.FC<CapturedPiecesProps> = ({ 
+  pieces, 
+  color, 
+  pieceStyle = "classic" 
+}) => {
   const sortPieces = (pieces: string[]): string[] => {
     const order = ['q', 'r', 'b', 'n', 'p'];
     return pieces.sort((a, b) => {
@@ -48,6 +52,7 @@ const CapturedPieces: React.FC<CapturedPiecesProps> = ({ pieces, color }) => {
           >
             <ChessPiece
               piece={getDisplayPiece(piece)}
+              pieceStyle={pieceStyle}
               className="drop-shadow-sm"
             />
           </div>
