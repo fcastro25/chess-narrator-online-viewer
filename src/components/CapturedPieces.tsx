@@ -1,5 +1,6 @@
 
 import React from "react";
+import ChessPiece from "./ChessPiece";
 
 interface CapturedPiecesProps {
   pieces: string[];
@@ -7,17 +8,6 @@ interface CapturedPiecesProps {
 }
 
 const CapturedPieces: React.FC<CapturedPiecesProps> = ({ pieces, color }) => {
-  const getPieceSymbol = (piece: string): string => {
-    const symbols: { [key: string]: string } = {
-      'K': '♔', 'Q': '♕', 'R': '♖', 'B': '♗', 'N': '♘', 'P': '♙',
-      'k': '♚', 'q': '♛', 'r': '♜', 'b': '♝', 'n': '♞', 'p': '♟'
-    };
-    
-    // Convert to the opposite color symbol since captured pieces show the opponent's pieces
-    const oppositePiece = color === "white" ? piece.toLowerCase() : piece.toUpperCase();
-    return symbols[oppositePiece] || piece;
-  };
-
   const sortPieces = (pieces: string[]): string[] => {
     const order = ['q', 'r', 'b', 'n', 'p'];
     return pieces.sort((a, b) => {
@@ -25,6 +15,11 @@ const CapturedPieces: React.FC<CapturedPiecesProps> = ({ pieces, color }) => {
       const bIndex = order.indexOf(b.toLowerCase());
       return aIndex - bIndex;
     });
+  };
+
+  // Convert pieces to opposite color for display (captured pieces show opponent's pieces)
+  const getDisplayPiece = (piece: string): string => {
+    return color === "white" ? piece.toLowerCase() : piece.toUpperCase();
   };
 
   if (pieces.length === 0) {
@@ -49,18 +44,12 @@ const CapturedPieces: React.FC<CapturedPiecesProps> = ({ pieces, color }) => {
         {sortPieces(pieces).map((piece, index) => (
           <div
             key={index}
-            className="text-2xl text-center transition-all duration-200 hover:scale-110"
+            className="flex justify-center transition-all duration-200 hover:scale-110"
           >
-            <span
-              className={`drop-shadow-sm ${
-                color === "white" ? "text-gray-800" : "text-gray-200"
-              }`}
-              style={{
-                filter: 'drop-shadow(1px 1px 1px rgba(0,0,0,0.3))'
-              }}
-            >
-              {getPieceSymbol(piece)}
-            </span>
+            <ChessPiece
+              piece={getDisplayPiece(piece)}
+              className="drop-shadow-sm"
+            />
           </div>
         ))}
       </div>

@@ -1,5 +1,5 @@
-
 import React from "react";
+import ChessPiece from "./ChessPiece";
 
 interface ChessBoardProps {
   position: string;
@@ -36,23 +36,6 @@ const ChessBoard: React.FC<ChessBoardProps> = ({
     });
     
     return pieces;
-  };
-
-  const getPieceClass = (piece: string): string => {
-    const isWhite = piece === piece.toUpperCase();
-    const color = isWhite ? 'white' : 'black';
-    
-    const pieceTypes: { [key: string]: string } = {
-      'k': 'king',
-      'q': 'queen', 
-      'r': 'rook',
-      'b': 'bishop',
-      'n': 'knight',
-      'p': 'pawn'
-    };
-    
-    const pieceType = pieceTypes[piece.toLowerCase()];
-    return `piece ${color}-${pieceType}`;
   };
 
   const getSquareName = (row: number, col: number): string => {
@@ -133,11 +116,9 @@ const ChessBoard: React.FC<ChessBoardProps> = ({
                       <div className="absolute inset-0 bg-yellow-300 opacity-30" />
                     )}
                     {piece && (
-                      <div 
-                        className={`
-                          ${getPieceClass(piece)}
-                          relative z-10
-                        `}
+                      <ChessPiece
+                        piece={piece}
+                        className="relative z-10"
                       />
                     )}
                   </div>
