@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -102,4 +103,33 @@ All colors MUST be HSL.
   body {
     @apply bg-background text-foreground;
   }
+}
+
+@layer components {
+  .piece {
+    @apply h-10 w-10;
+    background-image: url('/assets/chess-pieces-01.png');
+    background-repeat: no-repeat;
+    /* Adicione esta linha para um melhor dimensionamento da imagem */
+    background-size: 240px 80px; /* Largura total do sprite, Altura total do sprite */
+  }
+
+  /* --- Definições das Peças (ORDEM CORRIGIDA) --- */
+  /* Ordem: Rei, Rainha, Torre, BISPO, CAVALO, Peão */
+
+  /* Peças Brancas (primeira linha do sprite) */
+  .white-king   { background-position: 0px 0px; }
+  .white-queen  { background-position: -40px 0px; }
+  .white-rook   { background-position: -80px 0px; }
+  .white-bishop { background-position: -120px 0px; }
+  .white-knight { background-position: -160px 0px; }
+  .white-pawn   { background-position: -200px 0px; }
+
+  /* Peças Pretas (segunda linha do sprite) */
+  .black-king   { background-position: 0px -40px; }
+  .black-queen  { background-position: -40px -40px; }
+  .black-rook   { background-position: -80px -40px; }
+  .black-bishop { background-position: -120px -40px; }
+  .black-knight { background-position: -160px -40px; }
+  .black-pawn   { background-position: -200px -40px; }
 }

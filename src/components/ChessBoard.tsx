@@ -38,19 +38,21 @@ const ChessBoard: React.FC<ChessBoardProps> = ({
     return pieces;
   };
 
-  const getPieceSymbol = (piece: string): string => {
-    const classicSymbols: { [key: string]: string } = {
-      'K': '♔', 'Q': '♕', 'R': '♖', 'B': '♗', 'N': '♘', 'P': '♙',
-      'k': '♚', 'q': '♛', 'r': '♜', 'b': '♝', 'n': '♞', 'p': '♟'
+  const getPieceClass = (piece: string): string => {
+    const isWhite = piece === piece.toUpperCase();
+    const color = isWhite ? 'white' : 'black';
+    
+    const pieceTypes: { [key: string]: string } = {
+      'k': 'king',
+      'q': 'queen', 
+      'r': 'rook',
+      'b': 'bishop',
+      'n': 'knight',
+      'p': 'pawn'
     };
     
-    const modernSymbols: { [key: string]: string } = {
-      'K': '♔', 'Q': '♕', 'R': '♖', 'B': '♗', 'N': '♘', 'P': '♙',
-      'k': '♚', 'q': '♛', 'r': '♜', 'b': '♝', 'n': '♞', 'p': '♟'
-    };
-    
-    const symbols = pieceStyle === "modern" ? modernSymbols : classicSymbols;
-    return symbols[piece] || piece;
+    const pieceType = pieceTypes[piece.toLowerCase()];
+    return `piece ${color}-${pieceType}`;
   };
 
   const getSquareName = (row: number, col: number): string => {
@@ -116,13 +118,12 @@ const ChessBoard: React.FC<ChessBoardProps> = ({
               row.map((piece, colIndex) => {
                 const isLight = (rowIndex + colIndex) % 2 === 0;
                 const isHighlightedSquare = isHighlighted(rowIndex, colIndex);
-                const isWhitePiece = piece === piece?.toUpperCase();
                 
                 return (
                   <div
                     key={`${rowIndex}-${colIndex}`}
                     className={`
-                      w-12 h-12 flex items-center justify-center text-4xl font-bold
+                      w-12 h-12 flex items-center justify-center
                       transition-all duration-200 relative
                       ${isLight ? boardStyles.light : boardStyles.dark}
                       ${isHighlightedSquare ? 'ring-2 ring-yellow-400 ring-inset' : ''}
@@ -132,20 +133,12 @@ const ChessBoard: React.FC<ChessBoardProps> = ({
                       <div className="absolute inset-0 bg-yellow-300 opacity-30" />
                     )}
                     {piece && (
-                      <span 
+                      <div 
                         className={`
-                          relative z-10 transition-all duration-200
-                          ${isWhitePiece ? 'text-amber-50' : 'text-gray-900'}
-                          drop-shadow-md
+                          ${getPieceClass(piece)}
+                          relative z-10
                         `}
-                        style={{
-                          filter: isWhitePiece 
-                            ? 'drop-shadow(1px 1px 2px rgba(0,0,0,0.8)) drop-shadow(0 0 3px rgba(0,0,0,0.3))'
-                            : 'drop-shadow(1px 1px 1px rgba(255,255,255,0.3)) drop-shadow(0 0 2px rgba(0,0,0,0.5))',
-                        }}
-                      >
-                        {getPieceSymbol(piece)}
-                      </span>
+                      />
                     )}
                   </div>
                 );
