@@ -6,6 +6,7 @@ import GameControls from "./GameControls";
 import CapturedPieces from "./CapturedPieces";
 import SettingsDrawer from "./SettingsDrawer";
 import MoveAnalysisChart from "./MoveAnalysisChart";
+import ThemeProvider from "./ThemeProvider";
 
 const ChessViewer: React.FC = () => {
   const [chess] = useState(new Chess());
@@ -16,8 +17,10 @@ const ChessViewer: React.FC = () => {
   const [playbackSpeed, setPlaybackSpeed] = useState(1000);
   const [lastMove, setLastMove] = useState<{ from: string; to: string } | null>(null);
   const [capturedPieces, setCapturedPieces] = useState<{ white: string[], black: string[] }>({ white: [], black: [] });
-  const [boardStyle, setBoardStyle] = useState<"classic" | "modern" | "wood">("classic");
-  const [pieceStyle, setPieceStyle] = useState<"classic" | "modern">("classic");
+  const [boardStyle, setBoardStyle] = useState<string>("classic");
+  const [pieceStyle, setPieceStyle] = useState<string>("classic");
+  const [highlightColor, setHighlightColor] = useState<string>("yellow");
+  const [highlightOpacity, setHighlightOpacity] = useState<number>(0.3);
 
   const resetGame = useCallback(() => {
     chess.reset();
@@ -147,95 +150,103 @@ const ChessViewer: React.FC = () => {
   }, [isPlaying, currentMoveIndex, moves.length, nextMove, playbackSpeed]);
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="max-w-7xl mx-auto p-4">
-        {/* Header with Settings */}
-        <div className="flex justify-between items-center mb-6">
-          <div></div>
-          <SettingsDrawer
-            boardStyle={boardStyle}
-            pieceStyle={pieceStyle}
-            onBoardStyleChange={setBoardStyle}
-            onPieceStyleChange={setPieceStyle}
-          />
-        </div>
-        
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          {/* PGN Input */}
-          <div className="lg:col-span-1 order-2 lg:order-1">
-            <PGNInput
-              onPGNLoad={loadPGN}
-              moves={moves}
-              currentMoveIndex={currentMoveIndex}
-              onMoveClick={handleMoveClick}
+    <ThemeProvider>
+      <div className="min-h-screen bg-background text-foreground">
+        <div className="max-w-7xl mx-auto p-4">
+          {/* Header with Settings */}
+          <div className="flex justify-between items-center mb-6">
+            <div></div>
+            <SettingsDrawer
+              boardStyle={boardStyle}
+              pieceStyle={pieceStyle}
+              highlightColor={highlightColor}
+              highlightOpacity={highlightOpacity}
+              onBoardStyleChange={setBoardStyle}
+              onPieceStyleChange={setPieceStyle}
+              onHighlightColorChange={setHighlightColor}
+              onHighlightOpacityChange={setHighlightOpacity}
             />
           </div>
           
-          {/* Chess Board with Captured Pieces */}
-          <div className="lg:col-span-3 order-1 lg:order-2">
-            <div className="flex flex-col lg:flex-row items-center justify-center gap-6">
-              {/* Captured Black Pieces (left) */}
-              <div className="order-2 lg:order-1">
-                <CapturedPieces 
-                  pieces={capturedPieces.black} 
-                  color="black" 
-                  pieceStyle={pieceStyle} 
-                />
-              </div>
-              
-              {/* Chess Board */}
-              <div className="order-1 lg:order-2 flex flex-col items-center">
-                <ChessBoard
-                  position={position}
-                  lastMove={lastMove}
-                  boardStyle={boardStyle}
-                  pieceStyle={pieceStyle}
-                />
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            {/* PGN Input */}
+            <div className="lg:col-span-1 order-2 lg:order-1">
+              <PGNInput
+                onPGNLoad={loadPGN}
+                moves={moves}
+                currentMoveIndex={currentMoveIndex}
+                onMoveClick={handleMoveClick}
+              />
+            </div>
+            
+            {/* Chess Board with Captured Pieces */}
+            <div className="lg:col-span-3 order-1 lg:order-2">
+              <div className="flex flex-col lg:flex-row items-center justify-center gap-6">
+                {/* Captured Black Pieces (left) */}
+                <div className="order-2 lg:order-1">
+                  <CapturedPieces 
+                    pieces={capturedPieces.black} 
+                    color="black" 
+                    pieceStyle={pieceStyle} 
+                  />
+                </div>
                 
-                {/* Game Controls */}
-                <div className="mt-6 w-full max-w-md">
-                  <GameControls
-                    onPlay={play}
-                    onPause={pause}
-                    onNext={nextMove}
-                    onPrevious={previousMove}
-                    onReset={reset}
-                    onGoToStart={goToStart}
-                    onGoToEnd={goToEnd}
-                    isPlaying={isPlaying}
-                    canGoNext={currentMoveIndex < moves.length - 1}
-                    canGoPrevious={currentMoveIndex >= 0}
-                    canGoToEnd={moves.length > 0}
-                    playbackSpeed={playbackSpeed}
-                    onSpeedChange={setPlaybackSpeed}
+                {/* Chess Board */}
+                <div className="order-1 lg:order-2 flex flex-col items-center">
+                  <ChessBoard
+                    position={position}
+                    lastMove={lastMove}
+                    boardStyle={boardStyle}
+                    pieceStyle={pieceStyle}
+                    highlightColor={highlightColor}
+                    highlightOpacity={highlightOpacity}
+                  />
+                  
+                  {/* Game Controls */}
+                  <div className="mt-6 w-full max-w-md">
+                    <GameControls
+                      onPlay={play}
+                      onPause={pause}
+                      onNext={nextMove}
+                      onPrevious={previousMove}
+                      onReset={reset}
+                      onGoToStart={goToStart}
+                      onGoToEnd={goToEnd}
+                      isPlaying={isPlaying}
+                      canGoNext={currentMoveIndex < moves.length - 1}
+                      canGoPrevious={currentMoveIndex >= 0}
+                      canGoToEnd={moves.length > 0}
+                      playbackSpeed={playbackSpeed}
+                      onSpeedChange={setPlaybackSpeed}
+                    />
+                  </div>
+                </div>
+                
+                {/* Captured White Pieces (right) */}
+                <div className="order-3">
+                  <CapturedPieces 
+                    pieces={capturedPieces.white} 
+                    color="white" 
+                    pieceStyle={pieceStyle} 
                   />
                 </div>
               </div>
-              
-              {/* Captured White Pieces (right) */}
-              <div className="order-3">
-                <CapturedPieces 
-                  pieces={capturedPieces.white} 
-                  color="white" 
-                  pieceStyle={pieceStyle} 
-                />
-              </div>
+            </div>
+          </div>
+          
+          {/* Move Analysis Chart */}
+          <div className="mt-8">
+            <div className="bg-card p-4 rounded-lg border">
+              <h3 className="text-lg font-medium mb-4">Análise dos Movimentos</h3>
+              <MoveAnalysisChart moves={moves} currentMoveIndex={currentMoveIndex} />
+              <p className="text-xs text-muted-foreground mt-2">
+                * Análise simulada para demonstração. Em uma implementação real, seria integrada com Stockfish ou ChessBase API.
+              </p>
             </div>
           </div>
         </div>
-        
-        {/* Move Analysis Chart */}
-        <div className="mt-8">
-          <div className="bg-card p-4 rounded-lg border">
-            <h3 className="text-lg font-medium mb-4">Análise dos Movimentos</h3>
-            <MoveAnalysisChart moves={moves} currentMoveIndex={currentMoveIndex} />
-            <p className="text-xs text-muted-foreground mt-2">
-              * Análise simulada para demonstração. Em uma implementação real, seria integrada com Stockfish ou ChessBase API.
-            </p>
-          </div>
-        </div>
       </div>
-    </div>
+    </ThemeProvider>
   );
 };
 

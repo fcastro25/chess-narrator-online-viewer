@@ -4,15 +4,19 @@ import ChessPiece from "./ChessPiece";
 interface ChessBoardProps {
   position: string;
   lastMove?: { from: string; to: string } | null;
-  boardStyle?: "classic" | "modern" | "wood";
-  pieceStyle?: "classic" | "modern";
+  boardStyle?: string;
+  pieceStyle?: string;
+  highlightColor?: string;
+  highlightOpacity?: number;
 }
 
 const ChessBoard: React.FC<ChessBoardProps> = ({ 
   position, 
   lastMove, 
   boardStyle = "classic",
-  pieceStyle = "classic" 
+  pieceStyle = "classic",
+  highlightColor = "yellow",
+  highlightOpacity = 0.3
 }) => {
   const parseFEN = (fen: string) => {
     const parts = fen.split(" ");
@@ -53,20 +57,28 @@ const ChessBoard: React.FC<ChessBoardProps> = ({
   const getBoardStyles = () => {
     switch (boardStyle) {
       case "modern":
-        return {
-          light: "bg-slate-100",
-          dark: "bg-slate-600"
-        };
+        return { light: "bg-slate-100", dark: "bg-slate-600" };
       case "wood":
-        return {
-          light: "bg-yellow-100",
-          dark: "bg-yellow-800"
-        };
+        return { light: "bg-yellow-100", dark: "bg-yellow-800" };
+      case "green":
+        return { light: "bg-green-100", dark: "bg-green-700" };
+      case "blue":
+        return { light: "bg-blue-100", dark: "bg-blue-700" };
+      case "purple":
+        return { light: "bg-purple-100", dark: "bg-purple-700" };
       default:
-        return {
-          light: "bg-stone-200",
-          dark: "bg-stone-600"
-        };
+        return { light: "bg-stone-200", dark: "bg-stone-600" };
+    }
+  };
+
+  const getHighlightClass = () => {
+    switch (highlightColor) {
+      case "blue": return "bg-blue-400";
+      case "green": return "bg-green-400";
+      case "red": return "bg-red-400";
+      case "purple": return "bg-purple-400";
+      case "orange": return "bg-orange-400";
+      default: return "bg-yellow-300";
     }
   };
 
@@ -95,7 +107,7 @@ const ChessBoard: React.FC<ChessBoardProps> = ({
         </div>
         
         {/* Chess Board */}
-        <div className="border-2 border-stone-800 shadow-lg">
+        <div className="border-2 border-border shadow-lg">
           <div className="grid grid-cols-8 gap-0 w-96 h-96">
             {pieces.map((row, rowIndex) =>
               row.map((piece, colIndex) => {
@@ -109,11 +121,13 @@ const ChessBoard: React.FC<ChessBoardProps> = ({
                       w-12 h-12 flex items-center justify-center
                       transition-all duration-200 relative
                       ${isLight ? boardStyles.light : boardStyles.dark}
-                      ${isHighlightedSquare ? 'ring-2 ring-yellow-400 ring-inset' : ''}
                     `}
                   >
                     {isHighlightedSquare && (
-                      <div className="absolute inset-0 bg-yellow-300 opacity-30" />
+                      <div 
+                        className={`absolute inset-0 ${getHighlightClass()}`}
+                        style={{ opacity: highlightOpacity }}
+                      />
                     )}
                     {piece && (
                       <ChessPiece
