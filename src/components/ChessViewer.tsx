@@ -65,7 +65,7 @@ const ChessViewer: React.FC = () => {
           {/* Header with Settings */}
           <div className="flex justify-between items-center mb-6">
             <div></div>
-            <SettingsDrawler
+            <SettingsDrawer
               boardStyle={boardStyle}
               pieceStyle={pieceStyle}
               highlightColor={highlightColor}
