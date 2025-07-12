@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { memo } from "react";
 import {
   Select,
   SelectContent,
@@ -32,7 +32,7 @@ interface GameSelectorProps {
   onGameSelect: (index: number) => void;
 }
 
-const GameSelector: React.FC<GameSelectorProps> = ({
+const GameSelector: React.FC<GameSelectorProps> = memo(({
   games,
   selectedGameIndex,
   onGameSelect,
@@ -67,7 +67,7 @@ const GameSelector: React.FC<GameSelectorProps> = ({
         <SelectTrigger>
           <SelectValue placeholder="Selecione uma partida" />
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent className="max-h-60 overflow-y-auto">
           {games.map((game, index) => (
             <SelectItem key={index} value={index.toString()}>
               {getGameDisplayName(game, index)}
@@ -77,6 +77,8 @@ const GameSelector: React.FC<GameSelectorProps> = ({
       </Select>
     </div>
   );
-};
+});
+
+GameSelector.displayName = 'GameSelector';
 
 export default GameSelector;

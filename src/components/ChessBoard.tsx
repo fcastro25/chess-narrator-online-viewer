@@ -5,9 +5,12 @@ interface ChessBoardProps {
   position: string;
   lastMove?: { from: string; to: string } | null;
   boardStyle?: string;
-  pieceStyle?: string;
+  pieceStyle?: "classic" | "modern";
   highlightColor?: string;
   highlightOpacity?: number;
+  isInCheck?: boolean;
+  isCheckmate?: boolean;
+  kingSquare?: string;
 }
 
 const ChessBoard: React.FC<ChessBoardProps> = ({ 
@@ -16,7 +19,10 @@ const ChessBoard: React.FC<ChessBoardProps> = ({
   boardStyle = "classic",
   pieceStyle = "classic",
   highlightColor = "yellow",
-  highlightOpacity = 0.3
+  highlightOpacity = 0.3,
+  isInCheck = false,
+  isCheckmate = false,
+  kingSquare = ""
 }) => {
   const parseFEN = (fen: string) => {
     const parts = fen.split(" ");
@@ -54,6 +60,15 @@ const ChessBoard: React.FC<ChessBoardProps> = ({
     return squareName === lastMove.from || squareName === lastMove.to;
   };
 
+  const isKingInDanger = (row: number, col: number): 'check' | 'checkmate' | null => {
+    if (!kingSquare) return null;
+    const squareName = getSquareName(row, col);
+    if (squareName === kingSquare) {
+      return isCheckmate ? 'checkmate' : isInCheck ? 'check' : null;
+    }
+    return null;
+  };
+
   const getBoardStyles = () => {
     switch (boardStyle) {
       case "modern":
@@ -80,6 +95,10 @@ const ChessBoard: React.FC<ChessBoardProps> = ({
       case "orange": return "bg-orange-400";
       default: return "bg-yellow-300";
     }
+  };
+
+  const getCheckHighlightClass = (dangerType: 'check' | 'checkmate') => {
+    return dangerType === 'checkmate' ? 'bg-red-500' : 'bg-orange-400';
   };
 
   const boardStyles = getBoardStyles();
@@ -113,6 +132,7 @@ const ChessBoard: React.FC<ChessBoardProps> = ({
               row.map((piece, colIndex) => {
                 const isLight = (rowIndex + colIndex) % 2 === 0;
                 const isHighlightedSquare = isHighlighted(rowIndex, colIndex);
+                const kingDanger = isKingInDanger(rowIndex, colIndex);
                 
                 return (
                   <div
@@ -127,6 +147,12 @@ const ChessBoard: React.FC<ChessBoardProps> = ({
                       <div 
                         className={`absolute inset-0 ${getHighlightClass()}`}
                         style={{ opacity: highlightOpacity }}
+                      />
+                    )}
+                    {kingDanger && (
+                      <div 
+                        className={`absolute inset-0 ${getCheckHighlightClass(kingDanger)}`}
+                        style={{ opacity: 0.6 }}
                       />
                     )}
                     {piece && (

@@ -23,6 +23,8 @@ interface GameMetadata {
   ECO?: string;
 }
 
+type PieceStyle = "classic" | "modern";
+
 const ChessViewer: React.FC = () => {
   const [chess] = useState(new Chess());
   const [position, setPosition] = useState(chess.fen());
@@ -33,10 +35,14 @@ const ChessViewer: React.FC = () => {
   const [lastMove, setLastMove] = useState<{ from: string; to: string } | null>(null);
   const [capturedPieces, setCapturedPieces] = useState<{ white: string[], black: string[] }>({ white: [], black: [] });
   const [boardStyle, setBoardStyle] = useState<string>("classic");
-  const [pieceStyle, setPieceStyle] = useState<string>("classic");
+  const [pieceStyle, setPieceStyle] = useState<PieceStyle>("classic");
   const [highlightColor, setHighlightColor] = useState<string>("yellow");
   const [highlightOpacity, setHighlightOpacity] = useState<number>(0.3);
   const [gameMetadata, setGameMetadata] = useState<GameMetadata>({});
+  const [isInCheck, setIsInCheck] = useState(false);
+  const [isCheckmate, setIsCheckmate] = useState(false);
+  const [kingSquare, setKingSquare] = useState<string>("");
+  const [isAnalysisExpanded, setIsAnalysisExpanded] = useState(true);
 
   const resetGame = useCallback(() => {
     chess.reset();
@@ -44,6 +50,9 @@ const ChessViewer: React.FC = () => {
     setCurrentMoveIndex(-1);
     setLastMove(null);
     setCapturedPieces({ white: [], black: [] });
+    setIsInCheck(false);
+    setIsCheckmate(false);
+    setKingSquare("");
   }, [chess]);
 
   const loadPGN = useCallback((pgn: string, metadata?: GameMetadata) => {
@@ -95,6 +104,21 @@ const ChessViewer: React.FC = () => {
     return captured;
   }, [moves]);
 
+  const findKingSquare = useCallback((chess: Chess, color: 'w' | 'b'): string => {
+    const board = chess.board();
+    for (let rank = 0; rank < 8; rank++) {
+      for (let file = 0; file < 8; file++) {
+        const piece = board[rank][file];
+        if (piece && piece.type === 'k' && piece.color === color) {
+          const files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+          const ranks = ['8', '7', '6', '5', '4', '3', '2', '1'];
+          return files[file] + ranks[rank];
+        }
+      }
+    }
+    return "";
+  }, []);
+
   const goToMove = useCallback((moveIndex: number) => {
     chess.reset();
     
@@ -115,7 +139,20 @@ const ChessViewer: React.FC = () => {
     setPosition(chess.fen());
     setCurrentMoveIndex(moveIndex);
     setCapturedPieces(calculateCapturedPieces(moveIndex));
-  }, [chess, moves, calculateCapturedPieces]);
+    
+    // Check for check and checkmate
+    const inCheck = chess.inCheck();
+    const inCheckmate = chess.isCheckmate();
+    setIsInCheck(inCheck);
+    setIsCheckmate(inCheckmate);
+    
+    if (inCheck || inCheckmate) {
+      const currentPlayer = chess.turn();
+      setKingSquare(findKingSquare(chess, currentPlayer));
+    } else {
+      setKingSquare("");
+    }
+  }, [chess, moves, calculateCapturedPieces, findKingSquare]);
 
   const nextMove = useCallback(() => {
     if (currentMoveIndex < moves.length - 1) {
@@ -229,6 +266,9 @@ const ChessViewer: React.FC = () => {
                     pieceStyle={pieceStyle}
                     highlightColor={highlightColor}
                     highlightOpacity={highlightOpacity}
+                    isInCheck={isInCheck}
+                    isCheckmate={isCheckmate}
+                    kingSquare={kingSquare}
                   />
                   
                   {/* Progress Bar */}
@@ -279,13 +319,12 @@ const ChessViewer: React.FC = () => {
           
           {/* Move Analysis Chart */}
           <div className="mt-8">
-            <div className="bg-card p-4 rounded-lg border">
-              <h3 className="text-lg font-medium mb-4">Análise dos Movimentos</h3>
-              <MoveAnalysisChart moves={moves} currentMoveIndex={currentMoveIndex} />
-              <p className="text-xs text-muted-foreground mt-2">
-                * Análise simulada para demonstração. Em uma implementação real, seria integrada com Stockfish ou ChessBase API.
-              </p>
-            </div>
+            <MoveAnalysisChart 
+              moves={moves} 
+              currentMoveIndex={currentMoveIndex}
+              isExpanded={isAnalysisExpanded}
+              onToggleExpansion={() => setIsAnalysisExpanded(!isAnalysisExpanded)}
+            />
           </div>
         </div>
       </div>
