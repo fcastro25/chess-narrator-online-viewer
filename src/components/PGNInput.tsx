@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import PGNFileLoader from "./PGNFileLoader";
 import GameSelector from "./GameSelector";
 
@@ -28,9 +29,18 @@ interface PGNInputProps {
   moves: string[];
   currentMoveIndex: number;
   onMoveClick: (moveIndex: number) => void;
+  onFileLoadStart?: () => void;
+  onFileLoadEnd?: () => void;
 }
 
-const PGNInput: React.FC<PGNInputProps> = ({ onPGNLoad, moves, currentMoveIndex, onMoveClick }) => {
+const PGNInput: React.FC<PGNInputProps> = ({ 
+  onPGNLoad, 
+  moves, 
+  currentMoveIndex, 
+  onMoveClick,
+  onFileLoadStart,
+  onFileLoadEnd
+}) => {
   const [pgnText, setPgnText] = useState("");
   const [parsedGames, setParsedGames] = useState<ParsedGame[]>([]);
   const [selectedGameIndex, setSelectedGameIndex] = useState(0);
@@ -46,7 +56,6 @@ const PGNInput: React.FC<PGNInputProps> = ({ onPGNLoad, moves, currentMoveIndex,
       
       if (lines.length === 0) continue;
       
-      // Verifica se é seção de metadados (linhas começam com [)
       if (lines[0].startsWith('[')) {
         currentMetadata = {};
         for (const line of lines) {
@@ -59,7 +68,6 @@ const PGNInput: React.FC<PGNInputProps> = ({ onPGNLoad, moves, currentMoveIndex,
           }
         }
       } else {
-        // É seção de movimentos
         const moves = lines.join(' ').replace(/\s+/g, ' ').trim();
         if (moves && Object.keys(currentMetadata).length > 0) {
           games.push({
@@ -73,15 +81,24 @@ const PGNInput: React.FC<PGNInputProps> = ({ onPGNLoad, moves, currentMoveIndex,
     return games;
   };
 
-  const handleFileLoad = (content: string) => {
-    const games = parsePGNFile(content);
-    if (games.length > 0) {
-      setParsedGames(games);
-      setSelectedGameIndex(0);
-      onPGNLoad(games[0].moves, games[0].metadata);
-      setPgnText(games[0].moves);
-    } else {
-      alert('Nenhuma partida válida encontrada no arquivo PGN');
+  const handleFileLoad = async (content: string) => {
+    onFileLoadStart?.();
+    
+    // Simular delay para arquivos grandes
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    try {
+      const games = parsePGNFile(content);
+      if (games.length > 0) {
+        setParsedGames(games);
+        setSelectedGameIndex(0);
+        onPGNLoad(games[0].moves, games[0].metadata);
+        setPgnText(games[0].moves);
+      } else {
+        alert('Nenhuma partida válida encontrada no arquivo PGN');
+      }
+    } finally {
+      onFileLoadEnd?.();
     }
   };
 
@@ -112,31 +129,40 @@ const PGNInput: React.FC<PGNInputProps> = ({ onPGNLoad, moves, currentMoveIndex,
         Entrada PGN
       </h2>
       
-      <div className="space-y-4">
-        <PGNFileLoader onFileLoad={handleFileLoad} />
+      <Tabs defaultValue="single" className="w-full">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="single">Partida Única</TabsTrigger>
+          <TabsTrigger value="file">Arquivo PGN</TabsTrigger>
+        </TabsList>
         
-        <GameSelector
-          games={parsedGames}
-          selectedGameIndex={selectedGameIndex}
-          onGameSelect={handleGameSelect}
-        />
+        <TabsContent value="single" className="space-y-4">
+          <Textarea
+            value={pgnText}
+            onChange={(e) => setPgnText(e.target.value)}
+            placeholder="Cole aqui a notação PGN da partida..."
+            className="min-h-32 font-mono text-sm"
+          />
+          
+          <div className="flex gap-2">
+            <Button onClick={handleLoad} className="flex-1">
+              Carregar PGN
+            </Button>
+            <Button onClick={loadSample} variant="outline">
+              Exemplo
+            </Button>
+          </div>
+        </TabsContent>
         
-        <Textarea
-          value={pgnText}
-          onChange={(e) => setPgnText(e.target.value)}
-          placeholder="Cole aqui a notação PGN da partida ou carregue um arquivo..."
-          className="min-h-32 font-mono text-sm"
-        />
-        
-        <div className="flex gap-2">
-          <Button onClick={handleLoad} className="flex-1">
-            Carregar PGN
-          </Button>
-          <Button onClick={loadSample} variant="outline">
-            Exemplo
-          </Button>
-        </div>
-      </div>
+        <TabsContent value="file" className="space-y-4">
+          <PGNFileLoader onFileLoad={handleFileLoad} />
+          
+          <GameSelector
+            games={parsedGames}
+            selectedGameIndex={selectedGameIndex}
+            onGameSelect={handleGameSelect}
+          />
+        </TabsContent>
+      </Tabs>
 
       {moves.length > 0 && (
         <div className="mt-6">

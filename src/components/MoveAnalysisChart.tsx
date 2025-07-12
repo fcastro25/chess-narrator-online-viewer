@@ -1,3 +1,4 @@
+
 import React from "react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from "recharts";
 import { Button } from "@/components/ui/button";
@@ -70,7 +71,7 @@ const MoveAnalysisChart: React.FC<MoveAnalysisChartProps> = ({
 
   return (
     <div className="bg-card p-4 rounded-lg border">
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex justify-between items-center mb-2">
         <h3 className="text-lg font-medium">Análise dos Movimentos</h3>
         <Button
           variant="ghost"
@@ -89,7 +90,7 @@ const MoveAnalysisChart: React.FC<MoveAnalysisChartProps> = ({
               <p>Carregue uma partida para ver a análise dos movimentos</p>
             </div>
           ) : (
-            <div className="w-full h-40">
+            <div className="w-full h-40 mt-4">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={data} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--muted))" />

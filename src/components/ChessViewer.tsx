@@ -1,196 +1,43 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { Chess } from "chess.js";
+
+import React, { useState, useCallback } from "react";
 import ChessBoard from "./ChessBoard";
 import PGNInput from "./PGNInput";
-import GameControls from "./GameControls";
 import CapturedPieces from "./CapturedPieces";
 import SettingsDrawer from "./SettingsDrawer";
 import MoveAnalysisChart from "./MoveAnalysisChart";
 import ThemeProvider from "./ThemeProvider";
 import GameInfo from "./GameInfo";
-import { Progress } from "@/components/ui/progress";
-
-interface GameMetadata {
-  Event?: string;
-  Site?: string;
-  Date?: string;
-  Round?: string;
-  White?: string;
-  Black?: string;
-  Result?: string;
-  WhiteElo?: string;
-  BlackElo?: string;
-  ECO?: string;
-}
+import GamePlayback from "./GamePlayback";
+import LoadingOverlay from "./LoadingOverlay";
+import { useChessGame } from "../hooks/useChessGame";
 
 type PieceStyle = "classic" | "modern";
 
 const ChessViewer: React.FC = () => {
-  const [chess] = useState(new Chess());
-  const [position, setPosition] = useState(chess.fen());
-  const [moves, setMoves] = useState<string[]>([]);
-  const [currentMoveIndex, setCurrentMoveIndex] = useState(-1);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [playbackSpeed, setPlaybackSpeed] = useState(1000);
-  const [lastMove, setLastMove] = useState<{ from: string; to: string } | null>(null);
-  const [capturedPieces, setCapturedPieces] = useState<{ white: string[], black: string[] }>({ white: [], black: [] });
+  const {
+    position,
+    moves,
+    currentMoveIndex,
+    lastMove,
+    capturedPieces,
+    gameMetadata,
+    isInCheck,
+    isCheckmate,
+    kingSquare,
+    resetGame,
+    goToMove,
+    loadPGN,
+    setCurrentMoveIndex
+  } = useChessGame();
+
   const [boardStyle, setBoardStyle] = useState<string>("classic");
   const [pieceStyle, setPieceStyle] = useState<PieceStyle>("classic");
   const [highlightColor, setHighlightColor] = useState<string>("yellow");
   const [highlightOpacity, setHighlightOpacity] = useState<number>(0.3);
-  const [gameMetadata, setGameMetadata] = useState<GameMetadata>({});
-  const [isInCheck, setIsInCheck] = useState(false);
-  const [isCheckmate, setIsCheckmate] = useState(false);
-  const [kingSquare, setKingSquare] = useState<string>("");
-  const [isAnalysisExpanded, setIsAnalysisExpanded] = useState(true);
-
-  const resetGame = useCallback(() => {
-    chess.reset();
-    setPosition(chess.fen());
-    setCurrentMoveIndex(-1);
-    setLastMove(null);
-    setCapturedPieces({ white: [], black: [] });
-    setIsInCheck(false);
-    setIsCheckmate(false);
-    setKingSquare("");
-  }, [chess]);
-
-  const loadPGN = useCallback((pgn: string, metadata?: GameMetadata) => {
-    try {
-      const tempChess = new Chess();
-      tempChess.loadPgn(pgn);
-      const history = tempChess.history({ verbose: true });
-      
-      resetGame();
-      setMoves(history.map(move => move.san));
-      if (metadata) {
-        setGameMetadata(metadata);
-      } else {
-        setGameMetadata({});
-      }
-    } catch (error) {
-      console.error("Erro ao carregar PGN:", error);
-      alert("PGN inválido. Verifique o formato.");
-    }
-  }, [resetGame]);
-
-  const calculateProgress = (): number => {
-    if (moves.length === 0) return 0;
-    return Math.round(((currentMoveIndex + 1) / moves.length) * 100);
-  };
-
-  const calculateCapturedPieces = useCallback((moveIndex: number) => {
-    const tempChess = new Chess();
-    const captured = { white: [], black: [] };
-    
-    for (let i = 0; i <= moveIndex; i++) {
-      if (i < moves.length) {
-        try {
-          const move = tempChess.move(moves[i]);
-          if (move.captured) {
-            if (move.color === 'w') {
-              captured.black.push(move.captured);
-            } else {
-              captured.white.push(move.captured);
-            }
-          }
-        } catch (error) {
-          console.error(`Erro no movimento ${i}:`, error);
-          break;
-        }
-      }
-    }
-    
-    return captured;
-  }, [moves]);
-
-  const findKingSquare = useCallback((chess: Chess, color: 'w' | 'b'): string => {
-    const board = chess.board();
-    for (let rank = 0; rank < 8; rank++) {
-      for (let file = 0; file < 8; file++) {
-        const piece = board[rank][file];
-        if (piece && piece.type === 'k' && piece.color === color) {
-          const files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
-          const ranks = ['8', '7', '6', '5', '4', '3', '2', '1'];
-          return files[file] + ranks[rank];
-        }
-      }
-    }
-    return "";
-  }, []);
-
-  const goToMove = useCallback((moveIndex: number) => {
-    chess.reset();
-    
-    for (let i = 0; i <= moveIndex; i++) {
-      if (i < moves.length) {
-        try {
-          const move = chess.move(moves[i]);
-          if (i === moveIndex) {
-            setLastMove({ from: move.from, to: move.to });
-          }
-        } catch (error) {
-          console.error(`Erro no movimento ${i}:`, error);
-          break;
-        }
-      }
-    }
-    
-    setPosition(chess.fen());
-    setCurrentMoveIndex(moveIndex);
-    setCapturedPieces(calculateCapturedPieces(moveIndex));
-    
-    // Check for check and checkmate
-    const inCheck = chess.inCheck();
-    const inCheckmate = chess.isCheckmate();
-    setIsInCheck(inCheck);
-    setIsCheckmate(inCheckmate);
-    
-    if (inCheck || inCheckmate) {
-      const currentPlayer = chess.turn();
-      setKingSquare(findKingSquare(chess, currentPlayer));
-    } else {
-      setKingSquare("");
-    }
-  }, [chess, moves, calculateCapturedPieces, findKingSquare]);
-
-  const nextMove = useCallback(() => {
-    if (currentMoveIndex < moves.length - 1) {
-      goToMove(currentMoveIndex + 1);
-    }
-  }, [currentMoveIndex, moves.length, goToMove]);
-
-  const previousMove = useCallback(() => {
-    if (currentMoveIndex >= 0) {
-      goToMove(currentMoveIndex - 1);
-    }
-  }, [currentMoveIndex, goToMove]);
-
-  const goToStart = useCallback(() => {
-    resetGame();
-  }, [resetGame]);
-
-  const goToEnd = useCallback(() => {
-    if (moves.length > 0) {
-      goToMove(moves.length - 1);
-    }
-  }, [moves.length, goToMove]);
-
-  const play = useCallback(() => {
-    setIsPlaying(true);
-  }, []);
-
-  const pause = useCallback(() => {
-    setIsPlaying(false);
-  }, []);
-
-  const reset = useCallback(() => {
-    setIsPlaying(false);
-    resetGame();
-  }, [resetGame]);
+  const [isAnalysisExpanded, setIsAnalysisExpanded] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleMoveClick = useCallback((moveIndex: number) => {
-    setIsPlaying(false);
     goToMove(moveIndex);
   }, [goToMove]);
 
@@ -198,32 +45,27 @@ const ChessViewer: React.FC = () => {
     setPieceStyle(style as PieceStyle);
   }, []);
 
-  useEffect(() => {
-    let interval: NodeJS.Timeout;
-    
-    if (isPlaying && currentMoveIndex < moves.length - 1) {
-      interval = setInterval(() => {
-        nextMove();
-      }, playbackSpeed);
-    } else if (isPlaying && currentMoveIndex >= moves.length - 1) {
-      setIsPlaying(false);
-    }
+  const handleFileLoadStart = useCallback(() => {
+    setIsLoading(true);
+  }, []);
 
-    return () => {
-      if (interval) {
-        clearInterval(interval);
-      }
-    };
-  }, [isPlaying, currentMoveIndex, moves.length, nextMove, playbackSpeed]);
+  const handleFileLoadEnd = useCallback(() => {
+    setIsLoading(false);
+  }, []);
 
   return (
     <ThemeProvider>
       <div className="min-h-screen bg-background text-foreground">
+        <LoadingOverlay 
+          isVisible={isLoading} 
+          message="Carregando partidas do arquivo PGN..."
+        />
+        
         <div className="max-w-7xl mx-auto p-4">
           {/* Header with Settings */}
           <div className="flex justify-between items-center mb-6">
             <div></div>
-            <SettingsDrawer
+            <SettingsDrawler
               boardStyle={boardStyle}
               pieceStyle={pieceStyle}
               highlightColor={highlightColor}
@@ -243,6 +85,8 @@ const ChessViewer: React.FC = () => {
                 moves={moves}
                 currentMoveIndex={currentMoveIndex}
                 onMoveClick={handleMoveClick}
+                onFileLoadStart={handleFileLoadStart}
+                onFileLoadEnd={handleFileLoadEnd}
               />
             </div>
             
@@ -273,39 +117,16 @@ const ChessViewer: React.FC = () => {
                     isInCheck={isInCheck}
                     isCheckmate={isCheckmate}
                     kingSquare={kingSquare}
-                    animationDuration={Math.min(800, Math.max(200, 1000 - (3000 - playbackSpeed) / 4))}
+                    animationDuration={400}
                   />
                   
-                  {/* Progress Bar */}
-                  {moves.length > 0 && (
-                    <div className="mt-4 w-full max-w-md">
-                      <div className="flex justify-between text-sm text-muted-foreground mb-1">
-                        <span>Progresso da Partida</span>
-                        <span>{calculateProgress()}%</span>
-                      </div>
-                      <Progress value={calculateProgress()} className="h-2" />
-                      <div className="flex justify-between text-xs text-muted-foreground mt-1">
-                        <span>Movimento {Math.max(0, currentMoveIndex + 1)} de {moves.length}</span>
-                      </div>
-                    </div>
-                  )}
-                  
-                  {/* Game Controls */}
-                  <div className="mt-4 w-full max-w-md">
-                    <GameControls
-                      onPlay={play}
-                      onPause={pause}
-                      onNext={nextMove}
-                      onPrevious={previousMove}
-                      onReset={reset}
-                      onGoToStart={goToStart}
-                      onGoToEnd={goToEnd}
-                      isPlaying={isPlaying}
-                      canGoNext={currentMoveIndex < moves.length - 1}
-                      canGoPrevious={currentMoveIndex >= 0}
-                      canGoToEnd={moves.length > 0}
-                      playbackSpeed={playbackSpeed}
-                      onSpeedChange={setPlaybackSpeed}
+                  {/* Game Playback Controls */}
+                  <div className="mt-4">
+                    <GamePlayback
+                      moves={moves}
+                      currentMoveIndex={currentMoveIndex}
+                      onGoToMove={goToMove}
+                      onReset={resetGame}
                     />
                   </div>
                 </div>
