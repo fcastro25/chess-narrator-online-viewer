@@ -1,4 +1,5 @@
-import React from "react";
+
+import React, { useState, useEffect } from "react";
 import ChessPiece from "./ChessPiece";
 
 interface ChessBoardProps {
@@ -11,6 +12,7 @@ interface ChessBoardProps {
   isInCheck?: boolean;
   isCheckmate?: boolean;
   kingSquare?: string;
+  animationDuration?: number;
 }
 
 const ChessBoard: React.FC<ChessBoardProps> = ({ 
@@ -22,8 +24,16 @@ const ChessBoard: React.FC<ChessBoardProps> = ({
   highlightOpacity = 0.3,
   isInCheck = false,
   isCheckmate = false,
-  kingSquare = ""
+  kingSquare = "",
+  animationDuration = 400
 }) => {
+  const [animatingPiece, setAnimatingPiece] = useState<{
+    piece: string;
+    from: string;
+    to: string;
+  } | null>(null);
+  const [displayPosition, setDisplayPosition] = useState(position);
+
   const parseFEN = (fen: string) => {
     const parts = fen.split(" ");
     const board = parts[0];
@@ -52,6 +62,12 @@ const ChessBoard: React.FC<ChessBoardProps> = ({
     const files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
     const ranks = ['8', '7', '6', '5', '4', '3', '2', '1'];
     return files[col] + ranks[row];
+  };
+
+  const getSquarePosition = (square: string): { row: number; col: number } => {
+    const file = square.charCodeAt(0) - 'a'.charCodeAt(0);
+    const rank = 8 - parseInt(square[1]);
+    return { row: rank, col: file };
   };
 
   const isHighlighted = (row: number, col: number): boolean => {
@@ -101,8 +117,40 @@ const ChessBoard: React.FC<ChessBoardProps> = ({
     return dangerType === 'checkmate' ? 'bg-red-500' : 'bg-orange-400';
   };
 
+  // Handle piece animation when position changes
+  useEffect(() => {
+    if (lastMove && displayPosition !== position) {
+      const oldPieces = parseFEN(displayPosition);
+      const newPieces = parseFEN(position);
+      
+      // Find the piece that moved
+      const fromPos = getSquarePosition(lastMove.from);
+      const toPos = getSquarePosition(lastMove.to);
+      
+      const movingPiece = oldPieces[fromPos.row][fromPos.col];
+      
+      if (movingPiece) {
+        setAnimatingPiece({
+          piece: movingPiece,
+          from: lastMove.from,
+          to: lastMove.to
+        });
+        
+        // Update display position after animation
+        setTimeout(() => {
+          setDisplayPosition(position);
+          setAnimatingPiece(null);
+        }, animationDuration);
+      } else {
+        setDisplayPosition(position);
+      }
+    } else {
+      setDisplayPosition(position);
+    }
+  }, [position, lastMove, animationDuration, displayPosition]);
+
   const boardStyles = getBoardStyles();
-  const pieces = parseFEN(position);
+  const pieces = parseFEN(displayPosition);
 
   return (
     <div className="relative">
@@ -126,13 +174,17 @@ const ChessBoard: React.FC<ChessBoardProps> = ({
         </div>
         
         {/* Chess Board */}
-        <div className="border-2 border-border shadow-lg">
+        <div className="border-2 border-border shadow-lg relative">
           <div className="grid grid-cols-8 gap-0 w-96 h-96">
             {pieces.map((row, rowIndex) =>
               row.map((piece, colIndex) => {
                 const isLight = (rowIndex + colIndex) % 2 === 0;
                 const isHighlightedSquare = isHighlighted(rowIndex, colIndex);
                 const kingDanger = isKingInDanger(rowIndex, colIndex);
+                const squareName = getSquareName(rowIndex, colIndex);
+                
+                // Don't show piece if it's being animated from this square
+                const shouldHidePiece = animatingPiece && animatingPiece.from === squareName;
                 
                 return (
                   <div
@@ -155,7 +207,7 @@ const ChessBoard: React.FC<ChessBoardProps> = ({
                         style={{ opacity: 0.6 }}
                       />
                     )}
-                    {piece && (
+                    {piece && !shouldHidePiece && (
                       <ChessPiece
                         piece={piece}
                         pieceStyle={pieceStyle}
@@ -167,6 +219,30 @@ const ChessBoard: React.FC<ChessBoardProps> = ({
               })
             )}
           </div>
+          
+          {/* Animated piece */}
+          {animatingPiece && (
+            <div
+              className="absolute pointer-events-none z-20"
+              style={{
+                transition: `all ${animationDuration}ms ease-in-out`,
+                transform: `translate(${getSquarePosition(animatingPiece.to).col * 48}px, ${getSquarePosition(animatingPiece.to).row * 48}px)`,
+                left: `${getSquarePosition(animatingPiece.from).col * 48}px`,
+                top: `${getSquarePosition(animatingPiece.from).row * 48}px`,
+                width: '48px',
+                height: '48px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              <ChessPiece
+                piece={animatingPiece.piece}
+                pieceStyle={pieceStyle}
+                className="relative z-10"
+              />
+            </div>
+          )}
         </div>
         
         {/* Ranks (8-1) on right */}

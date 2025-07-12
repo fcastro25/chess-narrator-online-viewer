@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -98,55 +99,48 @@ All colors MUST be HSL.
 }
 
 @layer components {
-  /* Classic piece style */
-  .piece {
-    @apply h-10 w-10;
+  /* Chess piece styles with corrected class names */
+  .chess-piece-classic {
+    @apply w-8 h-8;
     background-image: url('/assets/chess-pieces-01.png');
     background-repeat: no-repeat;
-    background-size: 240px 80px; /* 6 pieces × 40px wide, 2 rows × 40px tall */
+    background-size: 240px 80px;
   }
 
-  /* Modern piece style */
-  .modern-piece {
-    @apply h-10 w-10;
+  .chess-piece-modern {
+    @apply w-8 h-8;
     background-image: url('/assets/chess-pieces-modern.png');
     background-repeat: no-repeat;
-    background-size: 240px 80px; /* 6 pieces × 40px wide, 2 rows × 40px tall */
+    background-size: 240px 80px;
   }
 
-  /* --- Classic Piece Definitions --- */
-  /* Order: King, Queen, Rook, Bishop, Knight, Pawn */
+  /* Classic piece definitions */
+  .chess-piece-classic.chess-white-king   { background-position: 0px 0px; }
+  .chess-piece-classic.chess-white-queen  { background-position: -40px 0px; }
+  .chess-piece-classic.chess-white-rook   { background-position: -80px 0px; }
+  .chess-piece-classic.chess-white-bishop { background-position: -120px 0px; }
+  .chess-piece-classic.chess-white-knight { background-position: -160px 0px; }
+  .chess-piece-classic.chess-white-pawn   { background-position: -200px 0px; }
 
-  /* White Pieces (first row of sprite) */
-  .piece.white-king   { background-position: 0px 0px; }
-  .piece.white-queen  { background-position: -40px 0px; }
-  .piece.white-rook   { background-position: -80px 0px; }
-  .piece.white-bishop { background-position: -120px 0px; }
-  .piece.white-knight { background-position: -160px 0px; }
-  .piece.white-pawn   { background-position: -200px 0px; }
+  .chess-piece-classic.chess-black-king   { background-position: 0px -40px; }
+  .chess-piece-classic.chess-black-queen  { background-position: -40px -40px; }
+  .chess-piece-classic.chess-black-rook   { background-position: -80px -40px; }
+  .chess-piece-classic.chess-black-bishop { background-position: -120px -40px; }
+  .chess-piece-classic.chess-black-knight { background-position: -160px -40px; }
+  .chess-piece-classic.chess-black-pawn   { background-position: -200px -40px; }
 
-  /* Black Pieces (second row of sprite) */
-  .piece.black-king   { background-position: 0px -40px; }
-  .piece.black-queen  { background-position: -40px -40px; }
-  .piece.black-rook   { background-position: -80px -40px; }
-  .piece.black-bishop { background-position: -120px -40px; }
-  .piece.black-knight { background-position: -160px -40px; }
-  .piece.black-pawn   { background-position: -200px -40px; }
+  /* Modern piece definitions */
+  .chess-piece-modern.chess-white-king   { background-position: 0px 0px; }
+  .chess-piece-modern.chess-white-queen  { background-position: -40px 0px; }
+  .chess-piece-modern.chess-white-rook   { background-position: -80px 0px; }
+  .chess-piece-modern.chess-white-bishop { background-position: -120px 0px; }
+  .chess-piece-modern.chess-white-knight { background-position: -160px 0px; }
+  .chess-piece-modern.chess-white-pawn   { background-position: -200px 0px; }
 
-  /* --- Modern Piece Definitions --- */
-  /* White Pieces (first row of modern sprite) */
-  .modern-piece.white-king   { background-position: 0px 0px; }
-  .modern-piece.white-queen  { background-position: -40px 0px; }
-  .modern-piece.white-rook   { background-position: -80px 0px; }
-  .modern-piece.white-bishop { background-position: -120px 0px; }
-  .modern-piece.white-knight { background-position: -160px 0px; }
-  .modern-piece.white-pawn   { background-position: -200px 0px; }
-
-  /* Black Pieces (second row of modern sprite) */
-  .modern-piece.black-king   { background-position: 0px -40px; }
-  .modern-piece.black-queen  { background-position: -40px -40px; }
-  .modern-piece.black-rook   { background-position: -80px -40px; }
-  .modern-piece.black-bishop { background-position: -120px -40px; }
-  .modern-piece.black-knight { background-position: -160px -40px; }
-  .modern-piece.black-pawn   { background-position: -200px -40px; }
+  .chess-piece-modern.chess-black-king   { background-position: 0px -40px; }
+  .chess-piece-modern.chess-black-queen  { background-position: -40px -40px; }
+  .chess-piece-modern.chess-black-rook   { background-position: -80px -40px; }
+  .chess-piece-modern.chess-black-bishop { background-position: -120px -40px; }
+  .chess-piece-modern.chess-black-knight { background-position: -160px -40px; }
+  .chess-piece-modern.chess-black-pawn   { background-position: -200px -40px; }
 }

@@ -194,6 +194,10 @@ const ChessViewer: React.FC = () => {
     goToMove(moveIndex);
   }, [goToMove]);
 
+  const handlePieceStyleChange = useCallback((style: string) => {
+    setPieceStyle(style as PieceStyle);
+  }, []);
+
   useEffect(() => {
     let interval: NodeJS.Timeout;
     
@@ -225,7 +229,7 @@ const ChessViewer: React.FC = () => {
               highlightColor={highlightColor}
               highlightOpacity={highlightOpacity}
               onBoardStyleChange={setBoardStyle}
-              onPieceStyleChange={setPieceStyle}
+              onPieceStyleChange={handlePieceStyleChange}
               onHighlightColorChange={setHighlightColor}
               onHighlightOpacityChange={setHighlightOpacity}
             />
@@ -269,6 +273,7 @@ const ChessViewer: React.FC = () => {
                     isInCheck={isInCheck}
                     isCheckmate={isCheckmate}
                     kingSquare={kingSquare}
+                    animationDuration={Math.min(800, Math.max(200, 1000 - (3000 - playbackSpeed) / 4))}
                   />
                   
                   {/* Progress Bar */}
