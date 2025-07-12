@@ -7,6 +7,21 @@ import CapturedPieces from "./CapturedPieces";
 import SettingsDrawer from "./SettingsDrawer";
 import MoveAnalysisChart from "./MoveAnalysisChart";
 import ThemeProvider from "./ThemeProvider";
+import GameInfo from "./GameInfo";
+import { Progress } from "@/components/ui/progress";
+
+interface GameMetadata {
+  Event?: string;
+  Site?: string;
+  Date?: string;
+  Round?: string;
+  White?: string;
+  Black?: string;
+  Result?: string;
+  WhiteElo?: string;
+  BlackElo?: string;
+  ECO?: string;
+}
 
 const ChessViewer: React.FC = () => {
   const [chess] = useState(new Chess());
@@ -21,6 +36,7 @@ const ChessViewer: React.FC = () => {
   const [pieceStyle, setPieceStyle] = useState<string>("classic");
   const [highlightColor, setHighlightColor] = useState<string>("yellow");
   const [highlightOpacity, setHighlightOpacity] = useState<number>(0.3);
+  const [gameMetadata, setGameMetadata] = useState<GameMetadata>({});
 
   const resetGame = useCallback(() => {
     chess.reset();
@@ -30,7 +46,7 @@ const ChessViewer: React.FC = () => {
     setCapturedPieces({ white: [], black: [] });
   }, [chess]);
 
-  const loadPGN = useCallback((pgn: string) => {
+  const loadPGN = useCallback((pgn: string, metadata?: GameMetadata) => {
     try {
       const tempChess = new Chess();
       tempChess.loadPgn(pgn);
@@ -38,11 +54,21 @@ const ChessViewer: React.FC = () => {
       
       resetGame();
       setMoves(history.map(move => move.san));
+      if (metadata) {
+        setGameMetadata(metadata);
+      } else {
+        setGameMetadata({});
+      }
     } catch (error) {
       console.error("Erro ao carregar PGN:", error);
       alert("PGN inválido. Verifique o formato.");
     }
   }, [resetGame]);
+
+  const calculateProgress = (): number => {
+    if (moves.length === 0) return 0;
+    return Math.round(((currentMoveIndex + 1) / moves.length) * 100);
+  };
 
   const calculateCapturedPieces = useCallback((moveIndex: number) => {
     const tempChess = new Chess();
@@ -181,6 +207,9 @@ const ChessViewer: React.FC = () => {
             
             {/* Chess Board with Captured Pieces */}
             <div className="lg:col-span-3 order-1 lg:order-2">
+              {/* Game Info */}
+              <GameInfo metadata={gameMetadata} />
+              
               <div className="flex flex-col lg:flex-row items-center justify-center gap-6">
                 {/* Captured Black Pieces (left) */}
                 <div className="order-2 lg:order-1">
@@ -202,8 +231,22 @@ const ChessViewer: React.FC = () => {
                     highlightOpacity={highlightOpacity}
                   />
                   
+                  {/* Progress Bar */}
+                  {moves.length > 0 && (
+                    <div className="mt-4 w-full max-w-md">
+                      <div className="flex justify-between text-sm text-muted-foreground mb-1">
+                        <span>Progresso da Partida</span>
+                        <span>{calculateProgress()}%</span>
+                      </div>
+                      <Progress value={calculateProgress()} className="h-2" />
+                      <div className="flex justify-between text-xs text-muted-foreground mt-1">
+                        <span>Movimento {Math.max(0, currentMoveIndex + 1)} de {moves.length}</span>
+                      </div>
+                    </div>
+                  )}
+                  
                   {/* Game Controls */}
-                  <div className="mt-6 w-full max-w-md">
+                  <div className="mt-4 w-full max-w-md">
                     <GameControls
                       onPlay={play}
                       onPause={pause}

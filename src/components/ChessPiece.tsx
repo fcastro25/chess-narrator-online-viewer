@@ -3,20 +3,20 @@ import React from "react";
 
 interface ChessPieceProps {
   piece: string;
+  pieceStyle?: string;
   className?: string;
-  pieceStyle?: "classic" | "modern";
 }
 
 const ChessPiece: React.FC<ChessPieceProps> = ({ 
   piece, 
-  className = "", 
-  pieceStyle = "classic" 
+  pieceStyle = "classic", 
+  className = "" 
 }) => {
   const getPieceClass = (piece: string): string => {
-    const isWhite = piece === piece.toUpperCase();
-    const color = isWhite ? 'white' : 'black';
+    const color = piece === piece.toUpperCase() ? 'white' : 'black';
+    const type = piece.toLowerCase();
     
-    const pieceTypes: { [key: string]: string } = {
+    const pieceMap: { [key: string]: string } = {
       'k': 'king',
       'q': 'queen', 
       'r': 'rook',
@@ -24,23 +24,15 @@ const ChessPiece: React.FC<ChessPieceProps> = ({
       'n': 'knight',
       'p': 'pawn'
     };
-    
-    const pieceType = pieceTypes[piece.toLowerCase()];
-    
-    // Add piece style to the class name
-    const styleClass = pieceStyle === "modern" ? "modern-piece" : "piece";
-    
-    return `${styleClass} ${color}-${pieceType}`;
-  };
 
-  // Don't render anything if piece is null or undefined
-  if (!piece) {
-    return null;
-  }
+    const pieceType = pieceMap[type] || 'pawn';
+    return `chess-piece-${pieceStyle} chess-${color}-${pieceType}`;
+  };
 
   return (
     <div 
-      className={`${getPieceClass(piece)} ${className}`}
+      className={`inline-block ${getPieceClass(piece)} ${className}`}
+      style={{ width: '32px', height: '32px' }}
     />
   );
 };

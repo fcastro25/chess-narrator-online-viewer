@@ -2,9 +2,29 @@
 import React, { useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import PGNFileLoader from "./PGNFileLoader";
+import GameSelector from "./GameSelector";
+
+interface GameMetadata {
+  Event?: string;
+  Site?: string;
+  Date?: string;
+  Round?: string;
+  White?: string;
+  Black?: string;
+  Result?: string;
+  WhiteElo?: string;
+  BlackElo?: string;
+  ECO?: string;
+}
+
+interface ParsedGame {
+  metadata: GameMetadata;
+  moves: string;
+}
 
 interface PGNInputProps {
-  onPGNLoad: (pgn: string) => void;
+  onPGNLoad: (pgn: string, metadata?: GameMetadata) => void;
   moves: string[];
   currentMoveIndex: number;
   onMoveClick: (moveIndex: number) => void;
@@ -12,6 +32,65 @@ interface PGNInputProps {
 
 const PGNInput: React.FC<PGNInputProps> = ({ onPGNLoad, moves, currentMoveIndex, onMoveClick }) => {
   const [pgnText, setPgnText] = useState("");
+  const [parsedGames, setParsedGames] = useState<ParsedGame[]>([]);
+  const [selectedGameIndex, setSelectedGameIndex] = useState(0);
+
+  const parsePGNFile = (content: string): ParsedGame[] => {
+    const games: ParsedGame[] = [];
+    const sections = content.split(/\n\s*\n/).filter(section => section.trim());
+    
+    let currentMetadata: GameMetadata = {};
+    
+    for (const section of sections) {
+      const lines = section.split('\n').map(line => line.trim()).filter(line => line);
+      
+      if (lines.length === 0) continue;
+      
+      // Verifica se é seção de metadados (linhas começam com [)
+      if (lines[0].startsWith('[')) {
+        currentMetadata = {};
+        for (const line of lines) {
+          if (line.startsWith('[') && line.endsWith(']')) {
+            const match = line.match(/\[(\w+)\s+"([^"]+)"\]/);
+            if (match) {
+              const [, key, value] = match;
+              currentMetadata[key as keyof GameMetadata] = value;
+            }
+          }
+        }
+      } else {
+        // É seção de movimentos
+        const moves = lines.join(' ').replace(/\s+/g, ' ').trim();
+        if (moves && Object.keys(currentMetadata).length > 0) {
+          games.push({
+            metadata: { ...currentMetadata },
+            moves
+          });
+        }
+      }
+    }
+    
+    return games;
+  };
+
+  const handleFileLoad = (content: string) => {
+    const games = parsePGNFile(content);
+    if (games.length > 0) {
+      setParsedGames(games);
+      setSelectedGameIndex(0);
+      onPGNLoad(games[0].moves, games[0].metadata);
+      setPgnText(games[0].moves);
+    } else {
+      alert('Nenhuma partida válida encontrada no arquivo PGN');
+    }
+  };
+
+  const handleGameSelect = (index: number) => {
+    setSelectedGameIndex(index);
+    const selectedGame = parsedGames[index];
+    onPGNLoad(selectedGame.moves, selectedGame.metadata);
+    setPgnText(selectedGame.moves);
+  };
 
   const handleLoad = () => {
     if (pgnText.trim()) {
@@ -24,6 +103,7 @@ const PGNInput: React.FC<PGNInputProps> = ({ onPGNLoad, moves, currentMoveIndex,
   const loadSample = () => {
     setPgnText(samplePGN);
     onPGNLoad(samplePGN);
+    setParsedGames([]);
   };
 
   return (
@@ -33,10 +113,18 @@ const PGNInput: React.FC<PGNInputProps> = ({ onPGNLoad, moves, currentMoveIndex,
       </h2>
       
       <div className="space-y-4">
+        <PGNFileLoader onFileLoad={handleFileLoad} />
+        
+        <GameSelector
+          games={parsedGames}
+          selectedGameIndex={selectedGameIndex}
+          onGameSelect={handleGameSelect}
+        />
+        
         <Textarea
           value={pgnText}
           onChange={(e) => setPgnText(e.target.value)}
-          placeholder="Cole aqui a notação PGN da partida..."
+          placeholder="Cole aqui a notação PGN da partida ou carregue um arquivo..."
           className="min-h-32 font-mono text-sm"
         />
         
