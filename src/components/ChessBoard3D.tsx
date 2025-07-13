@@ -124,8 +124,33 @@ const ChessBoard3D: React.FC<ChessBoard3DProps> = ({
     }
   };
 
+  const BoardLabels = () => {
+    const files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+    const ranks = ['8', '7', '6', '5', '4', '3', '2', '1'];
+    
+    return (
+      <>
+        {/* File labels (a-h) */}
+        {files.map((file, index) => (
+          <mesh key={`file-${file}`} position={[index, -0.3, -0.5]}>
+            <planeGeometry args={[0.3, 0.3]} />
+            <meshBasicMaterial color="#666666" transparent opacity={0.8} />
+          </mesh>
+        ))}
+        
+        {/* Rank labels (1-8) */}
+        {ranks.map((rank, index) => (
+          <mesh key={`rank-${rank}`} position={[-0.5, -0.3, index]}>
+            <planeGeometry args={[0.3, 0.3]} />
+            <meshBasicMaterial color="#666666" transparent opacity={0.8} />
+          </mesh>
+        ))}
+      </>
+    );
+  };
+
   return (
-    <div className="relative w-full h-96">
+    <div className="relative w-full h-[500px] overflow-hidden">
       {/* Angle Control Cube */}
       <div className="absolute top-4 right-4 z-10 bg-background/80 backdrop-blur-sm rounded-lg p-2">
         <div className="grid grid-cols-2 gap-1">
@@ -141,9 +166,27 @@ const ChessBoard3D: React.FC<ChessBoard3DProps> = ({
         </div>
       </div>
 
-      <Canvas camera={{ position: cameraPosition, fov: 75 }}>
-        <ambientLight intensity={0.6} />
-        <directionalLight position={[10, 10, 5]} intensity={0.8} />
+      <Canvas 
+        camera={{ position: cameraPosition, fov: 75 }}
+        style={{ width: '100%', height: '100%' }}
+        gl={{ antialias: true, alpha: true }}
+      >
+        {/* Melhor iluminação com múltiplas fontes */}
+        <ambientLight intensity={0.4} />
+        <directionalLight 
+          position={[10, 15, 10]} 
+          intensity={1.2} 
+          castShadow
+          shadow-mapSize-width={2048}
+          shadow-mapSize-height={2048}
+          shadow-camera-far={50}
+          shadow-camera-left={-10}
+          shadow-camera-right={10}
+          shadow-camera-top={10}
+          shadow-camera-bottom={-10}
+        />
+        <directionalLight position={[-5, 10, -5]} intensity={0.6} />
+        <pointLight position={[0, 8, 0]} intensity={0.8} />
         
         <OrbitControls 
           ref={controlsRef}
@@ -151,7 +194,7 @@ const ChessBoard3D: React.FC<ChessBoard3DProps> = ({
           enableZoom={true} 
           enableRotate={true}
           minDistance={3}
-          maxDistance={15}
+          maxDistance={20}
         />
         
         {/* Chess Board */}
@@ -172,9 +215,16 @@ const ChessBoard3D: React.FC<ChessBoard3DProps> = ({
               
               return (
                 <group key={`${rowIndex}-${colIndex}`} position={[colIndex, 0, rowIndex]}>
-                  <mesh position={[0, -0.05, 0]}>
+                  <mesh 
+                    position={[0, -0.05, 0]} 
+                    receiveShadow
+                  >
                     <boxGeometry args={[1, 0.1, 1]} />
-                    <meshStandardMaterial color={squareColor} />
+                    <meshStandardMaterial 
+                      color={squareColor} 
+                      roughness={0.3}
+                      metalness={0.1}
+                    />
                   </mesh>
                   
                   {piece && (
@@ -190,7 +240,8 @@ const ChessBoard3D: React.FC<ChessBoard3DProps> = ({
             })
           )}
           
-          {/* Board Labels - Simplified for now */}
+          {/* Board Labels */}
+          <BoardLabels />
         </group>
       </Canvas>
     </div>

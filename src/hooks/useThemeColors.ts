@@ -50,12 +50,12 @@ export const useThemeColors = (boardStyle: string) => {
     return {
       background: `${base.h} ${base.s}% ${isDark ? base.l : base.l}%`,
       foreground: `${base.h} ${base.s + 10}% ${isDark ? 95 : 10}%`,
-      muted: `${base.h} ${base.s}% ${isDark ? Math.max(base.l - 8, 15) : Math.min(base.l - 5, 90)}%`,
+      muted: `${base.h} ${Math.max(base.s - 15, 5)}% ${isDark ? Math.max(base.l - 8, 15) : Math.min(base.l - 5, 90)}%`,
       mutedForeground: `${base.h} ${Math.max(base.s - 10, 5)}% ${isDark ? 65 : 45}%`,
-      border: `${base.h} ${base.s}% ${isDark ? Math.max(base.l - 5, 20) : Math.min(base.l - 8, 85)}%`,
-      card: `${base.h} ${base.s}% ${isDark ? Math.max(base.l - 3, 18) : Math.min(base.l + 2, 98)}%`,
-      primary: `${base.h} ${Math.min(base.s + 20, 80)}% ${isDark ? Math.min(base.l + 15, 50) : Math.max(base.l - 25, 25)}%`,
-      secondary: `${base.h} ${base.s}% ${isDark ? Math.max(base.l - 10, 12) : Math.min(base.l - 3, 92)}%`
+      border: `${base.h} ${Math.max(base.s - 20, 5)}% ${isDark ? Math.max(base.l - 5, 20) : Math.min(base.l - 8, 85)}%`,
+      card: `${base.h} ${Math.max(base.s - 10, 5)}% ${isDark ? Math.max(base.l - 3, 18) : Math.min(base.l + 2, 98)}%`,
+      primary: `${base.h} ${Math.min(base.s + 10, 60)}% ${isDark ? Math.min(base.l + 10, 45) : Math.max(base.l - 35, 20)}%`,
+      secondary: `${base.h} ${Math.max(base.s - 10, 5)}% ${isDark ? Math.max(base.l - 10, 12) : Math.min(base.l - 3, 92)}%`
     };
   };
 

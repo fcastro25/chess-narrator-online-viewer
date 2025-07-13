@@ -38,17 +38,17 @@ const ChessPiece3D: React.FC<ChessPiece3DProps> = ({
       case 'k': // King
         return (
           <group>
-            <mesh position={[0, 0, 0]}>
+            <mesh position={[0, 0, 0]} castShadow receiveShadow>
               <cylinderGeometry args={[0.25, 0.3, 0.4]} />
-              <meshStandardMaterial color={color} />
+              <meshStandardMaterial color={color} roughness={0.4} metalness={0.2} />
             </mesh>
-            <mesh position={[0, 0.3, 0]}>
+            <mesh position={[0, 0.3, 0]} castShadow receiveShadow>
               <boxGeometry args={[0.1, 0.2, 0.1]} />
-              <meshStandardMaterial color={color} />
+              <meshStandardMaterial color={color} roughness={0.4} metalness={0.2} />
             </mesh>
-            <mesh position={[0, 0.35, 0]}>
+            <mesh position={[0, 0.35, 0]} castShadow receiveShadow>
               <boxGeometry args={[0.2, 0.1, 0.1]} />
-              <meshStandardMaterial color={color} />
+              <meshStandardMaterial color={color} roughness={0.4} metalness={0.2} />
             </mesh>
           </group>
         );
@@ -56,9 +56,9 @@ const ChessPiece3D: React.FC<ChessPiece3DProps> = ({
       case 'q': // Queen
         return (
           <group>
-            <mesh position={[0, 0, 0]}>
+            <mesh position={[0, 0, 0]} castShadow receiveShadow>
               <cylinderGeometry args={[0.25, 0.3, 0.4]} />
-              <meshStandardMaterial color={color} />
+              <meshStandardMaterial color={color} roughness={0.4} metalness={0.2} />
             </mesh>
             {[0, 1, 2, 3, 4].map(i => (
               <mesh 
@@ -68,9 +68,11 @@ const ChessPiece3D: React.FC<ChessPiece3DProps> = ({
                   0.3, 
                   Math.sin(i * Math.PI * 2 / 5) * 0.15
                 ]}
+                castShadow
+                receiveShadow
               >
                 <coneGeometry args={[0.05, 0.15]} />
-                <meshStandardMaterial color={color} />
+                <meshStandardMaterial color={color} roughness={0.4} metalness={0.2} />
               </mesh>
             ))}
           </group>
@@ -79,25 +81,25 @@ const ChessPiece3D: React.FC<ChessPiece3DProps> = ({
       case 'r': // Rook
         return (
           <group>
-            <mesh position={[0, 0, 0]}>
+            <mesh position={[0, 0, 0]} castShadow receiveShadow>
               <boxGeometry args={[0.4, 0.4, 0.4]} />
-              <meshStandardMaterial color={color} />
+              <meshStandardMaterial color={color} roughness={0.4} metalness={0.2} />
             </mesh>
-            <mesh position={[-0.15, 0.25, 0]}>
+            <mesh position={[-0.15, 0.25, 0]} castShadow receiveShadow>
               <boxGeometry args={[0.1, 0.1, 0.45]} />
-              <meshStandardMaterial color={color} />
+              <meshStandardMaterial color={color} roughness={0.4} metalness={0.2} />
             </mesh>
-            <mesh position={[0.15, 0.25, 0]}>
+            <mesh position={[0.15, 0.25, 0]} castShadow receiveShadow>
               <boxGeometry args={[0.1, 0.1, 0.45]} />
-              <meshStandardMaterial color={color} />
+              <meshStandardMaterial color={color} roughness={0.4} metalness={0.2} />
             </mesh>
-            <mesh position={[0, 0.25, -0.15]}>
+            <mesh position={[0, 0.25, -0.15]} castShadow receiveShadow>
               <boxGeometry args={[0.45, 0.1, 0.1]} />
-              <meshStandardMaterial color={color} />
+              <meshStandardMaterial color={color} roughness={0.4} metalness={0.2} />
             </mesh>
-            <mesh position={[0, 0.25, 0.15]}>
+            <mesh position={[0, 0.25, 0.15]} castShadow receiveShadow>
               <boxGeometry args={[0.45, 0.1, 0.1]} />
-              <meshStandardMaterial color={color} />
+              <meshStandardMaterial color={color} roughness={0.4} metalness={0.2} />
             </mesh>
           </group>
         );
@@ -105,13 +107,13 @@ const ChessPiece3D: React.FC<ChessPiece3DProps> = ({
       case 'b': // Bishop
         return (
           <group>
-            <mesh position={[0, 0, 0]}>
+            <mesh position={[0, 0, 0]} castShadow receiveShadow>
               <cylinderGeometry args={[0.25, 0.3, 0.3]} />
-              <meshStandardMaterial color={color} />
+              <meshStandardMaterial color={color} roughness={0.4} metalness={0.2} />
             </mesh>
-            <mesh position={[0, 0.25, 0]}>
+            <mesh position={[0, 0.25, 0]} castShadow receiveShadow>
               <coneGeometry args={[0.15, 0.3]} />
-              <meshStandardMaterial color={color} />
+              <meshStandardMaterial color={color} roughness={0.4} metalness={0.2} />
             </mesh>
           </group>
         );
@@ -119,13 +121,13 @@ const ChessPiece3D: React.FC<ChessPiece3DProps> = ({
       case 'n': // Knight
         return (
           <group>
-            <mesh position={[0, 0, 0]}>
+            <mesh position={[0, 0, 0]} castShadow receiveShadow>
               <cylinderGeometry args={[0.25, 0.3, 0.3]} />
-              <meshStandardMaterial color={color} />
+              <meshStandardMaterial color={color} roughness={0.4} metalness={0.2} />
             </mesh>
-            <mesh position={[0, 0.15, 0.1]}>
+            <mesh position={[0, 0.15, 0.1]} castShadow receiveShadow>
               <boxGeometry args={[0.2, 0.25, 0.35]} />
-              <meshStandardMaterial color={color} />
+              <meshStandardMaterial color={color} roughness={0.4} metalness={0.2} />
             </mesh>
           </group>
         );
@@ -133,22 +135,22 @@ const ChessPiece3D: React.FC<ChessPiece3DProps> = ({
       case 'p': // Pawn
         return (
           <group>
-            <mesh position={[0, 0, 0]}>
+            <mesh position={[0, 0, 0]} castShadow receiveShadow>
               <cylinderGeometry args={[0.2, 0.25, 0.25]} />
-              <meshStandardMaterial color={color} />
+              <meshStandardMaterial color={color} roughness={0.4} metalness={0.2} />
             </mesh>
-            <mesh position={[0, 0.2, 0]}>
+            <mesh position={[0, 0.2, 0]} castShadow receiveShadow>
               <cylinderGeometry args={[0.15, 0.15, 0.15]} />
-              <meshStandardMaterial color={color} />
+              <meshStandardMaterial color={color} roughness={0.4} metalness={0.2} />
             </mesh>
           </group>
         );
         
       default:
         return (
-          <mesh position={[0, 0, 0]}>
+          <mesh position={[0, 0, 0]} castShadow receiveShadow>
             <cylinderGeometry args={[0.2, 0.25, 0.25]} />
-            <meshStandardMaterial color={color} />
+            <meshStandardMaterial color={color} roughness={0.4} metalness={0.2} />
           </mesh>
         );
     }
