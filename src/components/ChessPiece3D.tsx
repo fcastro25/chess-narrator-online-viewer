@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Box, Cylinder, Cone } from "@react-three/drei";
+import { Mesh } from "three";
 
 interface ChessPiece3DProps {
   piece: string;
@@ -21,36 +21,40 @@ const ChessPiece3D: React.FC<ChessPiece3DProps> = ({
       case 'k': // King
         return (
           <group>
-            <Cylinder args={[0.25, 0.3, 0.4]} position={[0, 0, 0]}>
+            <mesh position={[0, 0, 0]}>
+              <cylinderGeometry args={[0.25, 0.3, 0.4]} />
               <meshStandardMaterial color={color} />
-            </Cylinder>
-            <Box args={[0.1, 0.2, 0.1]} position={[0, 0.3, 0]}>
+            </mesh>
+            <mesh position={[0, 0.3, 0]}>
+              <boxGeometry args={[0.1, 0.2, 0.1]} />
               <meshStandardMaterial color={color} />
-            </Box>
-            <Box args={[0.2, 0.1, 0.1]} position={[0, 0.35, 0]}>
+            </mesh>
+            <mesh position={[0, 0.35, 0]}>
+              <boxGeometry args={[0.2, 0.1, 0.1]} />
               <meshStandardMaterial color={color} />
-            </Box>
+            </mesh>
           </group>
         );
         
       case 'q': // Queen
         return (
           <group>
-            <Cylinder args={[0.25, 0.3, 0.4]} position={[0, 0, 0]}>
+            <mesh position={[0, 0, 0]}>
+              <cylinderGeometry args={[0.25, 0.3, 0.4]} />
               <meshStandardMaterial color={color} />
-            </Cylinder>
+            </mesh>
             {[0, 1, 2, 3, 4].map(i => (
-              <Cone 
+              <mesh 
                 key={i}
-                args={[0.05, 0.15]} 
                 position={[
                   Math.cos(i * Math.PI * 2 / 5) * 0.15, 
                   0.3, 
                   Math.sin(i * Math.PI * 2 / 5) * 0.15
                 ]}
               >
+                <coneGeometry args={[0.05, 0.15]} />
                 <meshStandardMaterial color={color} />
-              </Cone>
+              </mesh>
             ))}
           </group>
         );
@@ -58,65 +62,77 @@ const ChessPiece3D: React.FC<ChessPiece3DProps> = ({
       case 'r': // Rook
         return (
           <group>
-            <Box args={[0.4, 0.4, 0.4]} position={[0, 0, 0]}>
+            <mesh position={[0, 0, 0]}>
+              <boxGeometry args={[0.4, 0.4, 0.4]} />
               <meshStandardMaterial color={color} />
-            </Box>
-            <Box args={[0.1, 0.1, 0.45]} position={[-0.15, 0.25, 0]}>
+            </mesh>
+            <mesh position={[-0.15, 0.25, 0]}>
+              <boxGeometry args={[0.1, 0.1, 0.45]} />
               <meshStandardMaterial color={color} />
-            </Box>
-            <Box args={[0.1, 0.1, 0.45]} position={[0.15, 0.25, 0]}>
+            </mesh>
+            <mesh position={[0.15, 0.25, 0]}>
+              <boxGeometry args={[0.1, 0.1, 0.45]} />
               <meshStandardMaterial color={color} />
-            </Box>
-            <Box args={[0.45, 0.1, 0.1]} position={[0, 0.25, -0.15]}>
+            </mesh>
+            <mesh position={[0, 0.25, -0.15]}>
+              <boxGeometry args={[0.45, 0.1, 0.1]} />
               <meshStandardMaterial color={color} />
-            </Box>
-            <Box args={[0.45, 0.1, 0.1]} position={[0, 0.25, 0.15]}>
+            </mesh>
+            <mesh position={[0, 0.25, 0.15]}>
+              <boxGeometry args={[0.45, 0.1, 0.1]} />
               <meshStandardMaterial color={color} />
-            </Box>
+            </mesh>
           </group>
         );
         
       case 'b': // Bishop
         return (
           <group>
-            <Cylinder args={[0.25, 0.3, 0.3]} position={[0, 0, 0]}>
+            <mesh position={[0, 0, 0]}>
+              <cylinderGeometry args={[0.25, 0.3, 0.3]} />
               <meshStandardMaterial color={color} />
-            </Cylinder>
-            <Cone args={[0.15, 0.3]} position={[0, 0.25, 0]}>
+            </mesh>
+            <mesh position={[0, 0.25, 0]}>
+              <coneGeometry args={[0.15, 0.3]} />
               <meshStandardMaterial color={color} />
-            </Cone>
+            </mesh>
           </group>
         );
         
       case 'n': // Knight
         return (
           <group>
-            <Cylinder args={[0.25, 0.3, 0.3]} position={[0, 0, 0]}>
+            <mesh position={[0, 0, 0]}>
+              <cylinderGeometry args={[0.25, 0.3, 0.3]} />
               <meshStandardMaterial color={color} />
-            </Cylinder>
-            <Box args={[0.2, 0.25, 0.35]} position={[0, 0.15, 0.1]}>
+            </mesh>
+            <mesh position={[0, 0.15, 0.1]}>
+              <boxGeometry args={[0.2, 0.25, 0.35]} />
               <meshStandardMaterial color={color} />
-            </Box>
+            </mesh>
           </group>
         );
         
       case 'p': // Pawn
         return (
           <group>
-            <Cylinder args={[0.2, 0.25, 0.25]} position={[0, 0, 0]}>
+            <mesh position={[0, 0, 0]}>
+              <cylinderGeometry args={[0.2, 0.25, 0.25]} />
               <meshStandardMaterial color={color} />
-            </Cylinder>
-            <Cylinder args={[0.15, 0.15, 0.15]} position={[0, 0.2, 0]}>
+            </mesh>
+            <mesh position={[0, 0.2, 0]}>
+              <cylinderGeometry args={[0.15, 0.15, 0.15]} />
               <meshStandardMaterial color={color} />
-            </Cylinder>
+            </mesh>
           </group>
         );
         
       default:
         return (
-          <Cylinder args={[0.2, 0.25, 0.25]} position={[0, 0, 0]}>
+          <mesh position={[0, 0, 0]}>
+            <cylinderGeometry args={[0.2, 0.25, 0.25]} />
             <meshStandardMaterial color={color} />
-          </Cylinder>
+          </mesh>
         );
     }
   };
