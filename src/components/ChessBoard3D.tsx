@@ -1,7 +1,7 @@
 
 import React, { useRef, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { OrbitControls, Box, Text } from "@react-three/drei";
+import { OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 import ChessPiece3D from "./ChessPiece3D";
 
@@ -170,9 +170,10 @@ const ChessBoard3D: React.FC<ChessBoard3DProps> = ({
               
               return (
                 <group key={`${rowIndex}-${colIndex}`} position={[colIndex, 0, rowIndex]}>
-                  <Box args={[1, 0.1, 1]} position={[0, -0.05, 0]}>
+                  <mesh position={[0, -0.05, 0]}>
+                    <boxGeometry args={[1, 0.1, 1]} />
                     <meshStandardMaterial color={squareColor} />
-                  </Box>
+                  </mesh>
                   
                   {piece && (
                     <ChessPiece3D
@@ -186,32 +187,7 @@ const ChessBoard3D: React.FC<ChessBoard3DProps> = ({
             })
           )}
           
-          {/* Board Labels */}
-          {['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'].map((file, index) => (
-            <Text
-              key={`file-${file}`}
-              position={[index, -0.2, -0.5]}
-              fontSize={0.3}
-              color="#666"
-              anchorX="center"
-              anchorY="middle"
-            >
-              {file}
-            </Text>
-          ))}
-          
-          {['8', '7', '6', '5', '4', '3', '2', '1'].map((rank, index) => (
-            <Text
-              key={`rank-${rank}`}
-              position={[-0.5, -0.2, index]}
-              fontSize={0.3}
-              color="#666"
-              anchorX="center"
-              anchorY="middle"
-            >
-              {rank}
-            </Text>
-          ))}
+          {/* Board Labels - Simplified for now */}
         </group>
       </Canvas>
     </div>
