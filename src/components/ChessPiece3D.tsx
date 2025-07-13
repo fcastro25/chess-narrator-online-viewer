@@ -1,18 +1,35 @@
 
-import React from "react";
+import React, { Suspense } from "react";
 import { Mesh } from "three";
+import ChessPiece3DModel from "./ChessPiece3DModel";
 
 interface ChessPiece3DProps {
   piece: string;
   position: [number, number, number];
   pieceStyle?: string;
+  use3DModels?: boolean;
 }
 
 const ChessPiece3D: React.FC<ChessPiece3DProps> = ({ 
   piece, 
   position, 
-  pieceStyle = "classic" 
+  pieceStyle = "classic",
+  use3DModels = false
 }) => {
+  // If using 3D models, render the STL model instead
+  if (use3DModels) {
+    const styleNumber = pieceStyle === "classic" || pieceStyle === "01" ? "01" : 
+                       pieceStyle === "modern" || pieceStyle === "02" ? "02" : "01";
+    
+    return (
+      <ChessPiece3DModel 
+        piece={piece}
+        position={position}
+        styleNumber={styleNumber}
+      />
+    );
+  }
+
   const color = piece === piece.toUpperCase() ? '#f8f8f8' : '#2c2c2c';
   const type = piece.toLowerCase();
   

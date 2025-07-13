@@ -35,6 +35,7 @@ const ChessViewer: React.FC = () => {
 
   const [boardStyle, setBoardStyle] = useState<string>("classic");
   const [pieceStyle, setPieceStyle] = useState<PieceStyle>("classic");
+  const [use3DModels, setUse3DModels] = useState<boolean>(false);
   const [highlightColor, setHighlightColor] = useState<string>("yellow");
   const [highlightOpacity, setHighlightOpacity] = useState<number>(0.3);
   const [isAnalysisExpanded, setIsAnalysisExpanded] = useState(false);
@@ -75,10 +76,12 @@ const ChessViewer: React.FC = () => {
             <SettingsDrawer
               boardStyle={boardStyle}
               pieceStyle={pieceStyle}
+              use3DModels={use3DModels}
               highlightColor={highlightColor}
               highlightOpacity={highlightOpacity}
               onBoardStyleChange={setBoardStyle}
               onPieceStyleChange={handlePieceStyleChange}
+              onUse3DModelsChange={setUse3DModels}
               onHighlightColorChange={setHighlightColor}
               onHighlightOpacityChange={setHighlightOpacity}
             />
@@ -142,6 +145,7 @@ const ChessViewer: React.FC = () => {
                         lastMove={lastMove}
                         boardStyle={boardStyle}
                         pieceStyle={pieceStyle}
+                        use3DModels={use3DModels}
                         highlightColor={highlightColor}
                         highlightOpacity={highlightOpacity}
                         isInCheck={isInCheck}

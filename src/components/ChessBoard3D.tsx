@@ -10,6 +10,7 @@ interface ChessBoard3DProps {
   lastMove?: { from: string; to: string } | null;
   boardStyle?: string;
   pieceStyle?: "classic" | "modern";
+  use3DModels?: boolean;
   highlightColor?: string;
   highlightOpacity?: number;
   isInCheck?: boolean;
@@ -22,6 +23,7 @@ const ChessBoard3D: React.FC<ChessBoard3DProps> = ({
   lastMove, 
   boardStyle = "classic",
   pieceStyle = "classic",
+  use3DModels = false,
   highlightColor = "yellow",
   highlightOpacity = 0.3,
   isInCheck = false,
@@ -180,6 +182,7 @@ const ChessBoard3D: React.FC<ChessBoard3DProps> = ({
                       piece={piece}
                       position={[0, 0.3, 0]}
                       pieceStyle={pieceStyle}
+                      use3DModels={use3DModels}
                     />
                   )}
                 </group>

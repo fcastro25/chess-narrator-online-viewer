@@ -18,10 +18,12 @@ import { useTheme } from "next-themes";
 interface SettingsDrawerProps {
   boardStyle: string;
   pieceStyle: string;
+  use3DModels: boolean;
   highlightColor: string;
   highlightOpacity: number;
   onBoardStyleChange: (style: string) => void;
   onPieceStyleChange: (style: string) => void;
+  onUse3DModelsChange: (use3D: boolean) => void;
   onHighlightColorChange: (color: string) => void;
   onHighlightOpacityChange: (opacity: number) => void;
 }
@@ -54,10 +56,12 @@ const highlightColors = [
 const SettingsDrawer: React.FC<SettingsDrawerProps> = ({
   boardStyle,
   pieceStyle,
+  use3DModels,
   highlightColor,
   highlightOpacity,
   onBoardStyleChange,
   onPieceStyleChange,
+  onUse3DModelsChange,
   onHighlightColorChange,
   onHighlightOpacityChange,
 }) => {
@@ -120,19 +124,35 @@ const SettingsDrawer: React.FC<SettingsDrawerProps> = ({
                   <Crown className="h-4 w-4" />
                   <h3 className="text-lg font-medium">Estilo das Peças</h3>
                 </div>
-                <div className="grid grid-cols-2 gap-3">
-                  {pieceStyles.map((style) => (
-                    <Button
-                      key={style.id}
-                      variant={pieceStyle === style.id ? "default" : "outline"}
-                      onClick={() => onPieceStyleChange(style.id)}
-                      className="h-auto p-4 flex flex-col gap-2"
-                    >
-                      <span className="text-2xl">{style.symbol}</span>
-                      <span className="text-xs">{style.name}</span>
-                    </Button>
-                  ))}
-                </div>
+                 <div className="grid grid-cols-2 gap-3">
+                   {pieceStyles.map((style) => (
+                     <Button
+                       key={style.id}
+                       variant={pieceStyle === style.id ? "default" : "outline"}
+                       onClick={() => onPieceStyleChange(style.id)}
+                       className="h-auto p-4 flex flex-col gap-2"
+                     >
+                       <span className="text-2xl">{style.symbol}</span>
+                       <span className="text-xs">{style.name}</span>
+                     </Button>
+                   ))}
+                 </div>
+                 
+                 <div className="space-y-3 mt-6">
+                   <h4 className="text-md font-medium">Tipo de Modelo 3D</h4>
+                   <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
+                     <div>
+                       <p className="font-medium">Modelos STL Complexos</p>
+                       <p className="text-sm text-muted-foreground">
+                         Use modelos 3D detalhados em STL (apenas no modo 3D)
+                       </p>
+                     </div>
+                     <Switch
+                       checked={use3DModels}
+                       onCheckedChange={onUse3DModelsChange}
+                     />
+                   </div>
+                 </div>
               </div>
             </TabsContent>
 
