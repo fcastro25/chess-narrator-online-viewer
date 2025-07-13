@@ -1,6 +1,7 @@
 
 import React, { useState, useCallback } from "react";
 import ChessBoard from "./ChessBoard";
+import ChessBoard3D from "./ChessBoard3D";
 import PGNInput from "./PGNInput";
 import CapturedPieces from "./CapturedPieces";
 import SettingsDrawer from "./SettingsDrawer";
@@ -9,7 +10,9 @@ import ThemeProvider from "./ThemeProvider";
 import GameInfo from "./GameInfo";
 import GamePlayback from "./GamePlayback";
 import LoadingOverlay from "./LoadingOverlay";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { useChessGame } from "../hooks/useChessGame";
+import { useThemeColors } from "../hooks/useThemeColors";
 
 type PieceStyle = "classic" | "modern";
 
@@ -36,6 +39,10 @@ const ChessViewer: React.FC = () => {
   const [highlightOpacity, setHighlightOpacity] = useState<number>(0.3);
   const [isAnalysisExpanded, setIsAnalysisExpanded] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [boardMode, setBoardMode] = useState<"2d" | "3d">("2d");
+
+  // Apply dynamic theme colors based on board style
+  useThemeColors(boardStyle);
 
   const handleMoveClick = useCallback((moveIndex: number) => {
     goToMove(moveIndex);
@@ -55,7 +62,7 @@ const ChessViewer: React.FC = () => {
 
   return (
     <ThemeProvider>
-      <div className="min-h-screen bg-background text-foreground">
+      <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
         <LoadingOverlay 
           isVisible={isLoading} 
           message="Carregando partidas do arquivo PGN..."
@@ -107,18 +114,42 @@ const ChessViewer: React.FC = () => {
                 
                 {/* Chess Board */}
                 <div className="order-1 lg:order-2 flex flex-col items-center">
-                  <ChessBoard
-                    position={position}
-                    lastMove={lastMove}
-                    boardStyle={boardStyle}
-                    pieceStyle={pieceStyle}
-                    highlightColor={highlightColor}
-                    highlightOpacity={highlightOpacity}
-                    isInCheck={isInCheck}
-                    isCheckmate={isCheckmate}
-                    kingSquare={kingSquare}
-                    animationDuration={400}
-                  />
+                  {/* Board Mode Tabs */}
+                  <Tabs value={boardMode} onValueChange={(value) => setBoardMode(value as "2d" | "3d")} className="mb-4">
+                    <TabsList>
+                      <TabsTrigger value="2d">Tabuleiro 2D</TabsTrigger>
+                      <TabsTrigger value="3d">Tabuleiro 3D</TabsTrigger>
+                    </TabsList>
+                    
+                    <TabsContent value="2d" className="mt-4">
+                      <ChessBoard
+                        position={position}
+                        lastMove={lastMove}
+                        boardStyle={boardStyle}
+                        pieceStyle={pieceStyle}
+                        highlightColor={highlightColor}
+                        highlightOpacity={highlightOpacity}
+                        isInCheck={isInCheck}
+                        isCheckmate={isCheckmate}
+                        kingSquare={kingSquare}
+                        animationDuration={400}
+                      />
+                    </TabsContent>
+                    
+                    <TabsContent value="3d" className="mt-4">
+                      <ChessBoard3D
+                        position={position}
+                        lastMove={lastMove}
+                        boardStyle={boardStyle}
+                        pieceStyle={pieceStyle}
+                        highlightColor={highlightColor}
+                        highlightOpacity={highlightOpacity}
+                        isInCheck={isInCheck}
+                        isCheckmate={isCheckmate}
+                        kingSquare={kingSquare}
+                      />
+                    </TabsContent>
+                  </Tabs>
                   
                   {/* Game Playback Controls */}
                   <div className="mt-4">
