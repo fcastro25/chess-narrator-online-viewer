@@ -260,8 +260,8 @@ const ChessBoard3D: React.FC<ChessBoard3DProps> = ({
                   {piece && (
                     <AnimatedChessPiece3D
                       piece={piece}
-                      position={[0, 0.3, 0]}
-                      targetPosition={[0, 0.3, 0]}
+                      position={[colIndex, 0.3, rowIndex]}
+                      targetPosition={[colIndex, 0.3, rowIndex]}
                       pieceStyle={pieceStyle}
                       use3DModels={use3DModels}
                     />
@@ -271,8 +271,8 @@ const ChessBoard3D: React.FC<ChessBoard3DProps> = ({
             })
           )}
           
-          {/* Board Labels */}
-          <BoardLabels />
+        {/* Board Labels */}
+        <BoardLabels />
         </group>
       </Canvas>
     </div>

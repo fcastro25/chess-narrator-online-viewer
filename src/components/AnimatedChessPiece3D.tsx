@@ -74,7 +74,7 @@ const AnimatedChessPiece3D: React.FC<AnimatedChessPiece3DProps> = ({
   });
 
   return (
-    <group ref={groupRef} position={targetPosition}>
+    <group ref={groupRef} position={[0, 0, 0]}>
       <ChessPiece3D
         piece={piece}
         position={[0, 0, 0]}
