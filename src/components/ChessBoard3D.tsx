@@ -1,7 +1,7 @@
 
 import React, { useRef, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { OrbitControls } from "@react-three/drei";
+import { OrbitControls, Text3D, Center } from "@react-three/drei";
 import * as THREE from "three";
 import AnimatedChessPiece3D from "./AnimatedChessPiece3D";
 
@@ -140,49 +140,49 @@ const ChessBoard3D: React.FC<ChessBoard3DProps> = ({
           />
         </mesh>
         
-        {/* File labels (A-H) on bottom edge */}
+        {/* File labels (A-H) on bottom edge usando Text3D */}
         {files.map((file, index) => (
-          <group key={`file-${file}`} position={[index, -0.18, 8.3]}>
-            <mesh rotation={[-Math.PI / 2, 0, 0]}>
-              <planeGeometry args={[0.6, 0.6]} />
-              <meshStandardMaterial 
-                color="#2c1810" 
-                transparent 
-                opacity={0.9}
-              />
-            </mesh>
-            {/* Texto do label */}
-            <mesh position={[0, 0.01, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-              <planeGeometry args={[0.4, 0.4]} />
-              <meshStandardMaterial 
-                color="#f5f5dc"
-                transparent
-                opacity={1}
-              />
-            </mesh>
+          <group key={`file-${file}`} position={[index, -0.15, 8.5]}>
+            <Center>
+              <Text3D
+                font="https://threejs.org/examples/fonts/helvetiker_regular.typeface.json"
+                size={0.3}
+                height={0.05}
+                curveSegments={8}
+                bevelEnabled={false}
+                rotation={[-Math.PI / 2, 0, 0]}
+              >
+                {file}
+                <meshStandardMaterial 
+                  color="#f5f5dc"
+                  roughness={0.4}
+                  metalness={0.1}
+                />
+              </Text3D>
+            </Center>
           </group>
         ))}
         
-        {/* Rank labels (1-8) on right edge */}
+        {/* Rank labels (1-8) on right edge usando Text3D */}
         {ranks.map((rank, index) => (
-          <group key={`rank-${rank}`} position={[8.3, -0.18, index]}>
-            <mesh rotation={[-Math.PI / 2, 0, 0]}>
-              <planeGeometry args={[0.6, 0.6]} />
-              <meshStandardMaterial 
-                color="#2c1810" 
-                transparent 
-                opacity={0.9}
-              />
-            </mesh>
-            {/* Texto do label */}
-            <mesh position={[0, 0.01, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-              <planeGeometry args={[0.4, 0.4]} />
-              <meshStandardMaterial 
-                color="#f5f5dc"
-                transparent
-                opacity={1}
-              />
-            </mesh>
+          <group key={`rank-${rank}`} position={[8.5, -0.15, index]}>
+            <Center>
+              <Text3D
+                font="https://threejs.org/examples/fonts/helvetiker_regular.typeface.json"
+                size={0.3}
+                height={0.05}
+                curveSegments={8}
+                bevelEnabled={false}
+                rotation={[-Math.PI / 2, 0, 0]}
+              >
+                {rank}
+                <meshStandardMaterial 
+                  color="#f5f5dc"
+                  roughness={0.4}
+                  metalness={0.1}
+                />
+              </Text3D>
+            </Center>
           </group>
         ))}
       </group>
@@ -190,7 +190,7 @@ const ChessBoard3D: React.FC<ChessBoard3DProps> = ({
   };
 
   return (
-    <div className="relative w-full h-[600px] overflow-visible">
+    <div className="relative w-full h-[500px] overflow-visible">
       {/* Angle Control Cube */}
       <div className="absolute top-4 right-4 z-10 bg-background/80 backdrop-blur-sm rounded-lg p-2">
         <div className="grid grid-cols-2 gap-1">
