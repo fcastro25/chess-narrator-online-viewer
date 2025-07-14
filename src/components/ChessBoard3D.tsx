@@ -130,9 +130,9 @@ const ChessBoard3D: React.FC<ChessBoard3DProps> = ({
     
     return (
       <group>
-        {/* Board frame */}
-        <mesh position={[3.5, -0.15, 3.5]}>
-          <boxGeometry args={[10, 0.3, 10]} />
+        {/* Board frame - posicionado abaixo das casas para evitar conflitos */}
+        <mesh position={[3.5, -0.3, 3.5]}>
+          <boxGeometry args={[10, 0.2, 10]} />
           <meshStandardMaterial 
             color={boardColors.dark} 
             roughness={0.6}
@@ -142,36 +142,46 @@ const ChessBoard3D: React.FC<ChessBoard3DProps> = ({
         
         {/* File labels (A-H) on bottom edge */}
         {files.map((file, index) => (
-          <group key={`file-${file}`} position={[index, 0.02, 8.3]}>
+          <group key={`file-${file}`} position={[index, -0.18, 8.3]}>
             <mesh rotation={[-Math.PI / 2, 0, 0]}>
               <planeGeometry args={[0.6, 0.6]} />
               <meshStandardMaterial 
-                color="#f5f5dc" 
+                color="#2c1810" 
                 transparent 
                 opacity={0.9}
               />
             </mesh>
+            {/* Texto do label */}
             <mesh position={[0, 0.01, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-              <ringGeometry args={[0.15, 0.25, 32]} />
-              <meshStandardMaterial color="#8b4513" />
+              <planeGeometry args={[0.4, 0.4]} />
+              <meshStandardMaterial 
+                color="#f5f5dc"
+                transparent
+                opacity={1}
+              />
             </mesh>
           </group>
         ))}
         
         {/* Rank labels (1-8) on right edge */}
         {ranks.map((rank, index) => (
-          <group key={`rank-${rank}`} position={[8.3, 0.02, index]}>
+          <group key={`rank-${rank}`} position={[8.3, -0.18, index]}>
             <mesh rotation={[-Math.PI / 2, 0, 0]}>
               <planeGeometry args={[0.6, 0.6]} />
               <meshStandardMaterial 
-                color="#f5f5dc" 
+                color="#2c1810" 
                 transparent 
                 opacity={0.9}
               />
             </mesh>
+            {/* Texto do label */}
             <mesh position={[0, 0.01, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-              <ringGeometry args={[0.15, 0.25, 32]} />
-              <meshStandardMaterial color="#8b4513" />
+              <planeGeometry args={[0.4, 0.4]} />
+              <meshStandardMaterial 
+                color="#f5f5dc"
+                transparent
+                opacity={1}
+              />
             </mesh>
           </group>
         ))}
