@@ -3,7 +3,7 @@ import React, { useRef, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
-import ChessPiece3D from "./ChessPiece3D";
+import AnimatedChessPiece3D from "./AnimatedChessPiece3D";
 
 interface ChessBoard3DProps {
   position: string;
@@ -125,32 +125,62 @@ const ChessBoard3D: React.FC<ChessBoard3DProps> = ({
   };
 
   const BoardLabels = () => {
-    const files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+    const files = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
     const ranks = ['8', '7', '6', '5', '4', '3', '2', '1'];
     
     return (
-      <>
-        {/* File labels (a-h) */}
+      <group>
+        {/* Board frame */}
+        <mesh position={[3.5, -0.15, 3.5]}>
+          <boxGeometry args={[10, 0.3, 10]} />
+          <meshStandardMaterial 
+            color={boardColors.dark} 
+            roughness={0.6}
+            metalness={0.2}
+          />
+        </mesh>
+        
+        {/* File labels (A-H) on bottom edge */}
         {files.map((file, index) => (
-          <mesh key={`file-${file}`} position={[index, -0.3, -0.5]}>
-            <planeGeometry args={[0.3, 0.3]} />
-            <meshBasicMaterial color="#666666" transparent opacity={0.8} />
-          </mesh>
+          <group key={`file-${file}`} position={[index, 0.1, 8.5]}>
+            <mesh>
+              <planeGeometry args={[0.8, 0.8]} />
+              <meshStandardMaterial 
+                color="#f5f5dc" 
+                transparent 
+                opacity={0.9}
+              />
+            </mesh>
+            <mesh position={[0, 0.01, 0]}>
+              <ringGeometry args={[0.2, 0.35, 32]} />
+              <meshStandardMaterial color="#8b4513" />
+            </mesh>
+          </group>
         ))}
         
-        {/* Rank labels (1-8) */}
+        {/* Rank labels (1-8) on right edge */}
         {ranks.map((rank, index) => (
-          <mesh key={`rank-${rank}`} position={[-0.5, -0.3, index]}>
-            <planeGeometry args={[0.3, 0.3]} />
-            <meshBasicMaterial color="#666666" transparent opacity={0.8} />
-          </mesh>
+          <group key={`rank-${rank}`} position={[8.5, 0.1, index]}>
+            <mesh>
+              <planeGeometry args={[0.8, 0.8]} />
+              <meshStandardMaterial 
+                color="#f5f5dc" 
+                transparent 
+                opacity={0.9}
+              />
+            </mesh>
+            <mesh position={[0, 0.01, 0]}>
+              <ringGeometry args={[0.2, 0.35, 32]} />
+              <meshStandardMaterial color="#8b4513" />
+            </mesh>
+          </group>
         ))}
-      </>
+      </group>
     );
   };
 
   return (
-    <div className="relative w-full h-[500px] overflow-hidden">
+    <div className="relative w-full h-[600px] overflow-visible">
       {/* Angle Control Cube */}
       <div className="absolute top-4 right-4 z-10 bg-background/80 backdrop-blur-sm rounded-lg p-2">
         <div className="grid grid-cols-2 gap-1">
@@ -228,9 +258,10 @@ const ChessBoard3D: React.FC<ChessBoard3DProps> = ({
                   </mesh>
                   
                   {piece && (
-                    <ChessPiece3D
+                    <AnimatedChessPiece3D
                       piece={piece}
                       position={[0, 0.3, 0]}
+                      targetPosition={[0, 0.3, 0]}
                       pieceStyle={pieceStyle}
                       use3DModels={use3DModels}
                     />
