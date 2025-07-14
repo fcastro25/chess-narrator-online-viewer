@@ -142,17 +142,17 @@ const ChessBoard3D: React.FC<ChessBoard3DProps> = ({
         
         {/* File labels (A-H) on bottom edge */}
         {files.map((file, index) => (
-          <group key={`file-${file}`} position={[index, 0.1, 8.5]}>
-            <mesh>
-              <planeGeometry args={[0.8, 0.8]} />
+          <group key={`file-${file}`} position={[index, 0.02, 8.3]}>
+            <mesh rotation={[-Math.PI / 2, 0, 0]}>
+              <planeGeometry args={[0.6, 0.6]} />
               <meshStandardMaterial 
                 color="#f5f5dc" 
                 transparent 
                 opacity={0.9}
               />
             </mesh>
-            <mesh position={[0, 0.01, 0]}>
-              <ringGeometry args={[0.2, 0.35, 32]} />
+            <mesh position={[0, 0.01, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+              <ringGeometry args={[0.15, 0.25, 32]} />
               <meshStandardMaterial color="#8b4513" />
             </mesh>
           </group>
@@ -160,17 +160,17 @@ const ChessBoard3D: React.FC<ChessBoard3DProps> = ({
         
         {/* Rank labels (1-8) on right edge */}
         {ranks.map((rank, index) => (
-          <group key={`rank-${rank}`} position={[8.5, 0.1, index]}>
-            <mesh>
-              <planeGeometry args={[0.8, 0.8]} />
+          <group key={`rank-${rank}`} position={[8.3, 0.02, index]}>
+            <mesh rotation={[-Math.PI / 2, 0, 0]}>
+              <planeGeometry args={[0.6, 0.6]} />
               <meshStandardMaterial 
                 color="#f5f5dc" 
                 transparent 
                 opacity={0.9}
               />
             </mesh>
-            <mesh position={[0, 0.01, 0]}>
-              <ringGeometry args={[0.2, 0.35, 32]} />
+            <mesh position={[0, 0.01, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+              <ringGeometry args={[0.15, 0.25, 32]} />
               <meshStandardMaterial color="#8b4513" />
             </mesh>
           </group>
