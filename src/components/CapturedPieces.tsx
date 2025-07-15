@@ -35,12 +35,11 @@ const CapturedPieces: React.FC<CapturedPiecesProps> = ({
 
   // Classes responsivas para diferentes tamanhos de tela
   const responsiveClasses = "hidden lg:block";
-              className="flex justify-center transition-all duration-200 hover:scale-110 hover:z-10 relative"
   if (pieces.length === 0) {
     return (
       <div className={`w-16 min-h-[100px] bg-card/95 backdrop-blur-sm p-2 rounded-lg shadow-lg border ${positionClasses} ${responsiveClasses}`}>
         <h4 className="text-xs font-medium text-center mb-2 text-card-foreground">
-                className="drop-shadow-sm hover:drop-shadow-md"
+          {color === "white" ? "Brancas" : "Negras"}
         </h4>
         <div className="flex flex-col gap-1 max-h-[60vh] overflow-y-auto">
           Nenhuma peça capturada
