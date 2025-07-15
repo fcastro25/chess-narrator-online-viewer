@@ -142,7 +142,7 @@ const ChessBoard3D: React.FC<ChessBoard3DProps> = ({
         
         {/* File labels (A-H) on bottom edge usando Text3D */}
         {files.map((file, index) => (
-          <group key={`file-${file}`} position={[index, -0.15, 8.5]}>
+          <group key={`file-${file}`} position={[index, -0.15, 8.2]}>
             <Center>
               <Text3D
                 font="https://threejs.org/examples/fonts/helvetiker_regular.typeface.json"
@@ -165,7 +165,7 @@ const ChessBoard3D: React.FC<ChessBoard3DProps> = ({
         
         {/* Rank labels (1-8) on right edge usando Text3D */}
         {ranks.map((rank, index) => (
-          <group key={`rank-${rank}`} position={[8.5, -0.15, index]}>
+          <group key={`rank-${rank}`} position={[8.2, -0.15, index]}>
             <Center>
               <Text3D
                 font="https://threejs.org/examples/fonts/helvetiker_regular.typeface.json"
@@ -190,7 +190,7 @@ const ChessBoard3D: React.FC<ChessBoard3DProps> = ({
   };
 
   return (
-    <div className="relative w-full h-[500px] overflow-visible">
+    <div className="relative w-full h-[500px] overflow-visible" style={{ aspectRatio: '16/9', minWidth: '800px' }}>
       {/* Angle Control Cube */}
       <div className="absolute top-4 right-4 z-10 bg-background/80 backdrop-blur-sm rounded-lg p-2">
         <div className="grid grid-cols-2 gap-1">
