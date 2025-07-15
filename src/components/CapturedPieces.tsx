@@ -30,8 +30,8 @@ const CapturedPieces: React.FC<CapturedPiecesProps> = ({
 
   // Posicionamento floating baseado na posição
   const positionClasses = position === "left" 
-    ? "fixed left-8 top-1/2 -translate-y-1/2 z-50" 
-    : "fixed right-8 top-1/2 -translate-y-1/2 z-50";
+    ? "fixed left-16 top-1/2 -translate-y-1/2 z-50" 
+    : "fixed right-16 top-1/2 -translate-y-1/2 z-50";
 
   // Classes responsivas para diferentes tamanhos de tela
   const responsiveClasses = "hidden xl:block";
