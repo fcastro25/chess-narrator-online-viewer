@@ -30,7 +30,7 @@ const ChessBoard3D: React.FC<ChessBoard3DProps> = ({
   isCheckmate = false,
   kingSquare = ""
 }) => {
-  const [cameraPosition, setCameraPosition] = useState<[number, number, number]>([5, 5, 5]);
+  const [cameraPosition, setCameraPosition] = useState<[number, number, number]>([0, 8, 8]);
   const controlsRef = useRef<any>();
 
   const parseFEN = (fen: string) => {
@@ -110,10 +110,10 @@ const ChessBoard3D: React.FC<ChessBoard3DProps> = ({
   const boardColors = getBoardColors();
 
   const presetAngles = [
-    { name: "Top", position: [0, 8, 0] as [number, number, number] },
+    { name: "Top", position: [0, 10, 0] as [number, number, number] },
     { name: "Front", position: [0, 2, 8] as [number, number, number] },
     { name: "Side", position: [8, 2, 0] as [number, number, number] },
-    { name: "Corner", position: [5, 5, 5] as [number, number, number] },
+    { name: "Corner", position: [0, 8, 8] as [number, number, number] },
   ];
 
   const handleAngleChange = (position: [number, number, number]) => {

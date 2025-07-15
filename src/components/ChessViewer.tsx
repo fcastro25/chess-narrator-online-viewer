@@ -109,8 +109,8 @@ const ChessViewer: React.FC = () => {
                 {/* Chess Board */}
                 <div className="flex flex-col items-center">
                   {/* Board Mode Tabs */}
-                  <Tabs value={boardMode} onValueChange={(value) => setBoardMode(value as "2d" | "3d")} className="mb-4">
-                    <TabsList>
+                  <Tabs value={boardMode} onValueChange={(value) => setBoardMode(value as "2d" | "3d")} className="mb-4 w-full">
+                    <TabsList className="w-full max-w-md mx-auto">
                       <TabsTrigger value="2d">Tabuleiro 2D</TabsTrigger>
                       <TabsTrigger value="3d">Tabuleiro 3D</TabsTrigger>
                     </TabsList>
