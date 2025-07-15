@@ -5,12 +5,14 @@ interface CapturedPiecesProps {
   pieces: string[];
   color: "white" | "black";
   pieceStyle?: "classic" | "modern";
+  position?: "left" | "right";
 }
 
 const CapturedPieces: React.FC<CapturedPiecesProps> = ({ 
   pieces, 
   color, 
-  pieceStyle = "classic" 
+  pieceStyle = "classic",
+  position = "left"
 }) => {
   const sortPieces = (pieces: string[]): string[] => {
     const order = ['q', 'r', 'b', 'n', 'p'];
@@ -26,21 +28,38 @@ const CapturedPieces: React.FC<CapturedPiecesProps> = ({
     return color === "white" ? piece.toLowerCase() : piece.toUpperCase();
   };
 
+  // Posicionamento floating baseado na posição
+  const positionClasses = position === "left" 
+    ? "fixed left-4 top-1/2 -translate-y-1/2 z-50" 
+    : "fixed right-4 top-1/2 -translate-y-1/2 z-50";
+
+  // Classes responsivas para diferentes tamanhos de tela
+  const responsiveClasses = "hidden lg:block";
+              className="flex justify-center transition-all duration-200 hover:scale-110 hover:z-10 relative"
   if (pieces.length === 0) {
     return (
-      <div className="w-16 min-h-[100px] bg-card p-2 rounded-lg shadow-sm">
+      <div className={`w-16 min-h-[100px] bg-card/95 backdrop-blur-sm p-2 rounded-lg shadow-lg border ${positionClasses} ${responsiveClasses}`}>
         <h4 className="text-xs font-medium text-center mb-2 text-card-foreground">
-          {color === "white" ? "Brancas" : "Negras"}
+                className="drop-shadow-sm hover:drop-shadow-md"
         </h4>
-        <div className="text-center text-muted-foreground text-xs">
+        <div className="flex flex-col gap-1 max-h-[60vh] overflow-y-auto">
           Nenhuma peça capturada
         </div>
+        
+        {/* Indicador de quantidade de peças capturadas */}
+        {pieces.length > 0 && (
+          <div className="mt-2 text-center">
+            <span className="text-xs text-muted-foreground bg-muted/50 px-2 py-1 rounded-full">
+              {pieces.length}
+            </span>
+          </div>
+        )}
       </div>
     );
   }
 
   return (
-    <div className="w-16 min-h-[100px] bg-card p-2 rounded-lg shadow-sm">
+    <div className={`w-16 min-h-[100px] bg-card/95 backdrop-blur-sm p-2 rounded-lg shadow-lg border ${positionClasses} ${responsiveClasses}`}>
       <h4 className="text-xs font-medium text-center mb-2 text-card-foreground">
         {color === "white" ? "Brancas" : "Negras"}
       </h4>

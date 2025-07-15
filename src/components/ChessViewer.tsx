@@ -106,17 +106,8 @@ const ChessViewer: React.FC = () => {
               <GameInfo metadata={gameMetadata} />
               
               <div className="flex flex-col lg:flex-row items-center justify-center gap-6">
-                {/* Captured Black Pieces (left) */}
-                <div className="order-2 lg:order-1">
-                  <CapturedPieces 
-                    pieces={capturedPieces.black} 
-                    color="black" 
-                    pieceStyle={pieceStyle} 
-                  />
-                </div>
-                
                 {/* Chess Board */}
-                <div className="order-1 lg:order-2 flex flex-col items-center">
+                <div className="flex flex-col items-center">
                   {/* Board Mode Tabs */}
                   <Tabs value={boardMode} onValueChange={(value) => setBoardMode(value as "2d" | "3d")} className="mb-4">
                     <TabsList>
@@ -165,16 +156,21 @@ const ChessViewer: React.FC = () => {
                     />
                   </div>
                 </div>
-                
-                {/* Captured White Pieces (right) */}
-                <div className="order-3">
-                  <CapturedPieces 
-                    pieces={capturedPieces.white} 
-                    color="white" 
-                    pieceStyle={pieceStyle} 
-                  />
-                </div>
               </div>
+              
+              {/* Floating Captured Pieces */}
+              <CapturedPieces 
+                pieces={capturedPieces.black} 
+                color="black" 
+                pieceStyle={pieceStyle}
+                position="left"
+              />
+              <CapturedPieces 
+                pieces={capturedPieces.white} 
+                color="white" 
+                pieceStyle={pieceStyle}
+                position="right"
+              />
             </div>
           </div>
           
